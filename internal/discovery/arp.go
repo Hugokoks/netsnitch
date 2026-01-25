@@ -3,6 +3,7 @@ package discovery
 import (
 	"context"
 	"net"
+	"netsnitch/internal/scan"
 	"time"
 )
 
@@ -16,7 +17,7 @@ func NewARP(timeout time.Duration) *ARPDiscoverer {
 
 func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string) ([]net.IP, error) {
 	// 1. Parse CIDR
-	ips, err := parseCIDR(cidr)
+	ips, err := scan.ParseCIDR(cidr)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +33,7 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string) ([]net.IP, er
 	if err != nil {
 		return nil, err
 	}
-	defer handle.Close()
+	//defer handle.Close()
 
 	// 4. Send ARP requests
 	for _, ip := range ips {
