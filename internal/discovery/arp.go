@@ -24,9 +24,8 @@ type Stats struct {
 }
 
 type ARPDiscoverer struct {
-	Timeout time.Duration
-	stats   Stats
-	// Přidáno do struktury
+	Timeout   time.Duration
+	stats     Stats
 	alive     map[string]net.IP
 	mu        sync.Mutex
 	replyChan chan ARPReply
