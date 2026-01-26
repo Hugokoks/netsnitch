@@ -1,9 +1,14 @@
 package discovery
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 // listenARPReplies listens for ARP replies and sends them to the channel
-func listenARPReplies(ctx context.Context, handle *ARPHandle, replies chan<- ARPReply, stats *Stats) {
+func (a *ARPDiscoverer) listenARPReplies(ctx context.Context, handle *ARPHandle) {
+	defer a.wg.Done()
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -12,6 +17,7 @@ func listenARPReplies(ctx context.Context, handle *ARPHandle, replies chan<- ARP
 			// Read packet data (non-blocking with timeout)
 			data, _, err := handle.handle.ReadPacketData()
 			if err != nil {
+				time.Sleep(10 * time.Millisecond)
 				continue // Timeout or error, keep listening
 			}
 
@@ -21,11 +27,11 @@ func listenARPReplies(ctx context.Context, handle *ARPHandle, replies chan<- ARP
 				continue // Not a valid reply
 			}
 
-			stats.Received.Add(1)
+			a.stats.Received.Add(1)
 
 			// Send to channel (non-blocking)
 			select {
-			case replies <- ARPReply{IP: ip, MAC: mac}:
+			case a.replyChan <- ARPReply{IP: ip, MAC: mac}:
 			case <-ctx.Done():
 				return
 			}

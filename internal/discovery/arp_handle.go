@@ -22,7 +22,7 @@ type ARPHandle struct {
 // The interface and source IP should be obtained from pickInterface() beforehand.
 func openARPHandle(iface *net.Interface, srcIP net.IP) (*ARPHandle, error) {
 	// Open pcap handle on interface
-	handle, err := pcap.OpenLive(iface.Name, 65536, true, 10*time.Millisecond)
+	handle, err := pcap.OpenLive(iface.Name, 65536, true, 100*time.Millisecond)
 	if err != nil {
 		return nil, fmt.Errorf("pcap open failed (need root): %w", err)
 	}

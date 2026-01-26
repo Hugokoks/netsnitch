@@ -1,12 +1,34 @@
 package discovery
 
 import (
+	"context"
 	"fmt"
 	"net"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 )
+
+func (a *ARPDiscoverer) sendRequest(ctx context.Context, handle *ARPHandle, ips []net.IP) {
+
+	for _, targetIP := range ips {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			// Skip special IPs
+			if isSpecialIP(targetIP, handle.srcIP) {
+				continue
+			}
+			if err := sendARPRequest(handle, targetIP); err != nil {
+				a.stats.Errors.Add(1)
+			} else {
+				a.stats.Sent.Add(1)
+			}
+		}
+	}
+
+}
 
 // sendARPRequest sends an ARP request for the target IP
 func sendARPRequest(handle *ARPHandle, targetIP net.IP) error {
