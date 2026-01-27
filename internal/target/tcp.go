@@ -7,31 +7,28 @@ import (
 
 type TCPBuilder struct{}
 
-func (b TCPBuilder) Protocol() scan.Protocol{
+func (b TCPBuilder) Protocol() scan.Protocol {
 
 	return scan.TCP
 }
 
+func (b TCPBuilder) Build(ips []net.IP) []Target {
 
-func (b TCPBuilder) Build(ips []net.IP) []Target{
+	var targets []Target
 
-		var targets []Target
-
-		for _, ip := range ips {
-			for _, port := range scan.DefaultPorts {
-				targets = append(targets, Target{
-					IP:   ip,
-					Port: port,
-				})
-			}
+	for _, ip := range ips {
+		for _, port := range scan.DefaultPorts {
+			targets = append(targets, Target{
+				IP:   ip,
+				Port: port,
+			})
 		}
+	}
 
-		return targets
+	return targets
 }
 
-
-
-func init(){
+func init() {
 
 	Register(TCPBuilder{})
 }

@@ -40,26 +40,29 @@ func NewARP(timeout time.Duration) *ARPDiscoverer {
 	}
 }
 
-// Discover performs ARP discovery on the given CIDR network
-func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string) ([]net.IP, error) {
-	//Parse CIDR
+func (a *ARPDiscoverer) setup(cidr string) (*ARPHandle, []net.IP, error) {
+
 	ips, err := scan.ParseCIDR(cidr)
 	if err != nil {
-		return nil, fmt.Errorf("parse CIDR: %w", err)
+		return nil, nil, err
 	}
 
-	//Pick interface + source IP
 	iface, srcIP, err := pickInterface(ips)
 	if err != nil {
-		return nil, fmt.Errorf("pick interface: %w", err)
+		return nil, nil, err
 	}
 
-	fmt.Printf("[ARP] Using interface %s (%s) with IP %s\n", iface.Name, iface.HardwareAddr, srcIP)
-
-	//Open ARP handle
 	handle, err := openARPHandle(iface, srcIP)
+	return handle, ips, err
+}
+
+// Discover performs ARP discovery on the given CIDR network
+func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, cfg scan.Config) ([]net.IP, error) {
+
+	handle, ips, err := a.setup(cidr)
 	if err != nil {
-		return nil, fmt.Errorf("open ARP handle: %w", err)
+
+		return nil, fmt.Errorf("arp setup error: %w", err)
 	}
 	defer handle.Close()
 
@@ -80,10 +83,20 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string) ([]net.IP, er
 
 	//Send ARP requests
 	fmt.Printf("[ARP] Sending ARP requests to %d targets...\n", len(ips))
-	a.sendRequest(ctx, handle, ips)
+
+	if cfg.Type == scan.ARP_ACTIVE {
+		a.sendARPRequest(ctx, handle, ips)
+	}
 
 	//Wait for timeout or cancellation
 	<-scanCtx.Done()
+
+	a.stop()
+
+	return a.results(), nil
+}
+
+func (a *ARPDiscoverer) stop() {
 
 	//Close channel and wait for goroutines
 	close(a.replyChan)
@@ -94,44 +107,4 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string) ([]net.IP, er
 		a.stats.Sent.Load(), a.stats.Received.Load(), a.stats.Errors.Load())
 	fmt.Printf("[ARP] Found %d alive hosts\n", len(a.alive))
 
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	return a.results(), nil
-}
-
-// isSpecialIP checks if IP should be skipped (network, broadcast, own IP)
-func isSpecialIP(ip, ourIP net.IP) bool {
-	ip4 := ip.To4()
-	if ip4 == nil {
-		return true
-	}
-
-	// Network address (.0)
-	if ip4[3] == 0 {
-		return true
-	}
-
-	// Broadcast address (.255)
-	if ip4[3] == 255 {
-		return true
-	}
-
-	// Our own IP
-	if ip.Equal(ourIP) {
-		return true
-	}
-
-	return false
-}
-
-func (a *ARPDiscoverer) results() []net.IP {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	res := make([]net.IP, 0, len(a.alive))
-	for _, ip := range a.alive {
-		res = append(res, ip)
-	}
-	return res
 }

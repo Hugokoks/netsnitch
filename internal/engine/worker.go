@@ -13,12 +13,12 @@ func (s *Scheduler) worker() {
 		case <-s.ctx.Done():
 			return
 
-		case task, ok := <-s.tasks:
+		case target, ok := <-s.targets:
 			if !ok {
 				return
 			}
 
-			res := s.scanner.Scan(s.ctx, task)
+			res := s.scanner.Scan(s.ctx, target)
 
 			select {
 			case s.results <- res:

@@ -5,10 +5,11 @@ import "time"
 type Protocol string
 
 const (
-	TCP Protocol = "tcp"
-	UDP Protocol = "udp"
-	ICMP Protocol = "icmp"
-	ARP Protocol = "arp"
+	TCP         Protocol = "tcp"
+	UDP         Protocol = "udp"
+	ICMP        Protocol = "icmp"
+	ARP_PASSIVE Protocol = "arp_passive"
+	ARP_ACTIVE  Protocol = "arp_active"
 )
 
 type Config struct {

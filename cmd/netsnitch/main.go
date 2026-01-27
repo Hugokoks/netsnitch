@@ -11,8 +11,7 @@ import (
 	"time"
 )
 
-
-func main(){
+func main() {
 
 	ctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -21,24 +20,22 @@ func main(){
 	)
 	defer stop()
 
-	if len(os.Args) < 2{
+	if len(os.Args) < 2 {
 		fmt.Println("usage: netsnitch <cidr>")
 		os.Exit(1)
 	}
 
-
 	cidr := os.Args[1]
 
 	cfg := scan.Config{
-		
-		Type: scan.TCP,
-		Timeout: 300 * time.Millisecond,
-		Concurrency: 200,
 
+		Type:        scan.ARP_ACTIVE,
+		Timeout:     300 * time.Millisecond,
+		Concurrency: 200,
 	}
 
-	if err := engine.Run(ctx,cidr,cfg);err != nil{	
-		fmt.Println("error",err)
+	if err := engine.Run(ctx, cidr, cfg); err != nil {
+		fmt.Println("error", err)
 		os.Exit(1)
 	}
 

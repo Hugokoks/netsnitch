@@ -9,7 +9,7 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
-func (a *ARPDiscoverer) sendRequest(ctx context.Context, handle *ARPHandle, ips []net.IP) {
+func (a *ARPDiscoverer) sendARPRequest(ctx context.Context, handle *ARPHandle, ips []net.IP) {
 
 	for _, targetIP := range ips {
 		select {
@@ -20,7 +20,7 @@ func (a *ARPDiscoverer) sendRequest(ctx context.Context, handle *ARPHandle, ips 
 			if isSpecialIP(targetIP, handle.srcIP) {
 				continue
 			}
-			if err := sendARPRequest(handle, targetIP); err != nil {
+			if err := writeARPRequest(handle, targetIP); err != nil {
 				a.stats.Errors.Add(1)
 			} else {
 				a.stats.Sent.Add(1)
@@ -31,7 +31,7 @@ func (a *ARPDiscoverer) sendRequest(ctx context.Context, handle *ARPHandle, ips 
 }
 
 // sendARPRequest sends an ARP request for the target IP
-func sendARPRequest(handle *ARPHandle, targetIP net.IP) error {
+func writeARPRequest(handle *ARPHandle, targetIP net.IP) error {
 	// Create buffer for serialization
 	buf := gopacket.NewSerializeBuffer()
 	opts := gopacket.SerializeOptions{
@@ -70,4 +70,29 @@ func sendARPRequest(handle *ARPHandle, targetIP net.IP) error {
 	}
 
 	return nil
+}
+
+// isSpecialIP checks if IP should be skipped (network, broadcast, own IP)
+func isSpecialIP(ip, ourIP net.IP) bool {
+	ip4 := ip.To4()
+	if ip4 == nil {
+		return true
+	}
+
+	// Network address (.0)
+	if ip4[3] == 0 {
+		return true
+	}
+
+	// Broadcast address (.255)
+	if ip4[3] == 255 {
+		return true
+	}
+
+	// Our own IP
+	if ip.Equal(ourIP) {
+		return true
+	}
+
+	return false
 }
