@@ -1,14 +1,13 @@
-package scanner
+package tcp
 
 import (
 	"net"
-	"netsnitch/internal/scanner/probs"
-	"netsnitch/internal/target"
+	"netsnitch/internal/probs"
 	"strings"
 	"time"
 )
 
-func grabBanner(conn net.Conn) string {
+func GrabBanner(conn net.Conn) string {
 	_ = conn.SetReadDeadline(time.Now().Add(300 * time.Millisecond))
 	
 	buf := make([]byte, 512)
@@ -21,14 +20,14 @@ func grabBanner(conn net.Conn) string {
 	return strings.TrimSpace(string(buf[:n]))
 }
 
-func resolveBanner(conn net.Conn, t target.Target) string {
+func ResolveBanner(conn net.Conn) string {
 	// 1.banner
-	if banner := grabBanner(conn); banner != "" {
+	if banner := GrabBanner(conn); banner != "" {
 		return banner
 	}
 
 	// 2.HTTP probe (port-agnostic)
-	if banner := probs.TryHTTP(conn, t.IP.String()); banner != "" {
+	if banner := probs.TryHTTP(conn); banner != "" {
 		return banner
 	}
 

@@ -1,10 +1,10 @@
-package scanner
+package probs
 
 import (
 	"strings"
 )
 
-func detectService(banner string) string {
+func DetectService(banner string) string {
 	b := strings.ToLower(banner)
 
 	switch {

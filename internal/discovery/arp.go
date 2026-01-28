@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"netsnitch/internal/scan"
+	"netsnitch/internal/domain"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -42,12 +42,12 @@ func NewARP(timeout time.Duration) *ARPDiscoverer {
 
 func (a *ARPDiscoverer) setup(cidr string) (*ARPHandle, []net.IP, error) {
 
-	ips, err := scan.ParseCIDR(cidr)
+	ips, err := domain.ParseCIDR(cidr)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	iface, srcIP, err := pickInterface(ips)
+	iface, srcIP, err :=  PickInterface(ips)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -57,7 +57,7 @@ func (a *ARPDiscoverer) setup(cidr string) (*ARPHandle, []net.IP, error) {
 }
 
 // Discover performs ARP discovery on the given CIDR network
-func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, cfg scan.Config) ([]net.IP, error) {
+func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, cfg domain.Config) ([]net.IP, error) {
 
 	handle, ips, err := a.setup(cidr)
 	if err != nil {
@@ -84,7 +84,7 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, cfg scan.Conf
 	//Send ARP requests
 	fmt.Printf("[ARP] Sending ARP requests to %d targets...\n", len(ips))
 
-	if cfg.Type == scan.ARP_ACTIVE {
+	if cfg.Type == domain.ARP_ACTIVE {
 		a.sendARPRequest(ctx, handle, ips)
 	}
 

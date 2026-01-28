@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func pickInterface(ips []net.IP) (*net.Interface, net.IP, error) {
+func PickInterface(ips []net.IP) (*net.Interface, net.IP, error) {
 
 	ifaces, err := net.Interfaces()
 	if err != nil {

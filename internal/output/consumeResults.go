@@ -2,10 +2,10 @@ package output
 
 import (
 	"context"
-	"netsnitch/internal/scan"
+	"netsnitch/internal/domain"
 )
 
-func ConsumeResults(ctx context.Context, results <-chan scan.Result) {
+func ConsumeResults(ctx context.Context, results <-chan domain.Result) {
 	for {
 		select {
 		case <-ctx.Done():

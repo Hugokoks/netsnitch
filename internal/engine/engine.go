@@ -4,40 +4,18 @@ import (
 	"context"
 	"fmt"
 	"netsnitch/internal/output"
-	"netsnitch/internal/scan"
-	"netsnitch/internal/scanner"
-
-	"netsnitch/internal/target"
+	"netsnitch/internal/tasks"
 )
 
-func Run(ctx context.Context, cidr string,cfg scan.Config) error {
-	fmt.Println("[engine] starting scan for:", cidr)
+func Run(ctx context.Context, ts []tasks.Task, concurrency int) error {
+	fmt.Println("[engine] starting tcp scan")
 
-	/////Parse Ip's from cidr 192.168.0.0/24
-	ips, err := scan.ParseCIDR(cidr)
-	if err != nil {
-		return fmt.Errorf("parse CIDR failed: %w", err)
-	}
+	scheduler := NewScheduler(ctx, concurrency)
 	
-	////create targets
-	targets := target.BuildTargets(cfg, ips)
-	
-	////create Scanner
-	sc,err := scanner.New(cfg)
-	
-	if err != nil {
-		return err
-	}
-	
-	////Create Scheduler
-	scheduler := NewScheduler(ctx,cfg.Concurrency,sc)
-	
-	///write out scan results
-	go output.ConsumeResults(ctx,scheduler.Results())	
-	
-	///start scanning
-	scheduler.RunScan(targets)
+	go output.ConsumeResults(ctx, scheduler.Results())
 
-	fmt.Println("[engine] scan finished, targets:", len(targets))
+	scheduler.Run(ts)
+
+	fmt.Println("[engine] scan finished")
 	return nil
 }

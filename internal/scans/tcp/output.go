@@ -1,17 +1,18 @@
-package output
+package tcp
 
 import (
 	"fmt"
-	"netsnitch/internal/scan"
+	"netsnitch/internal/domain"
+	"netsnitch/internal/output"
 )
 
 type TCPFormatter struct{}
 
-func (f TCPFormatter) Protocol() scan.Protocol {
-	return scan.TCP
+func (f TCPFormatter) Protocol() domain.Protocol {
+	return domain.TCP
 }
 
-func (f TCPFormatter) Format(res scan.Result) {
+func (f TCPFormatter) Format(res domain.Result) {
 	if !res.Open {
 		return
 	}
@@ -31,5 +32,5 @@ func (f TCPFormatter) Format(res scan.Result) {
 
 // Automatically register formatter on package load
 func init() {
-	Register(TCPFormatter{})
+	output.Register(TCPFormatter{})
 }

@@ -1,21 +1,23 @@
 package output
 
-import "netsnitch/internal/scan"
+import (
+	"netsnitch/internal/domain"
+)
 
 // Formatter defines how a scan result should be displayed.
 
 type Formatter interface{
 
 
-	Protocol() scan.Protocol
-	Format(res scan.Result)
+	Protocol() domain.Protocol
+	Format(res domain.Result)
 
 }
 
 
 // internal registry of formatters by protocol
 
-var formatters = make(map[scan.Protocol]Formatter)
+var formatters = make(map[domain.Protocol]Formatter)
 
 
 // Register registers a formatter for a protocol.

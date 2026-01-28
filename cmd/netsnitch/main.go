@@ -3,16 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
-	"netsnitch/internal/engine"
-	"netsnitch/internal/scan"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"netsnitch/internal/domain"
+	"netsnitch/internal/engine"
+	_ "netsnitch/internal/scans/tcp"
+	"netsnitch/internal/tasks"
 )
 
 func main() {
-
 	ctx, stop := signal.NotifyContext(
 		context.Background(),
 		os.Interrupt,
@@ -27,16 +29,17 @@ func main() {
 
 	cidr := os.Args[1]
 
-	cfg := scan.Config{
-
-		Type:        scan.ARP_ACTIVE,
-		Timeout:     300 * time.Millisecond,
-		Concurrency: 200,
+	cfg := domain.Config{
+		Timeout: 300 * time.Millisecond,
+		Type: domain.TCP,
 	}
 
-	if err := engine.Run(ctx, cidr, cfg); err != nil {
-		fmt.Println("error", err)
+	taskStack := tasks.Build(cfg,cidr)
+
+	
+
+	if err := engine.Run(ctx, taskStack, 200); err != nil {
+		fmt.Println("error:", err)
 		os.Exit(1)
 	}
-
 }
