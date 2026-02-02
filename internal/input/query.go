@@ -12,4 +12,5 @@ type Stage struct {
 	Protocol domain.Protocol
 	Scope    domain.Scope
 	Options  map[string]any
+	Ports    []int
 }

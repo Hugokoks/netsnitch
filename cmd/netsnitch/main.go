@@ -44,7 +44,7 @@ func main() {
 			Type:    stage.Protocol,
 			Timeout: 10 * time.Second,
 			Scope:   stage.Scope,
-			Options: stage.Options,
+			Ports:   stage.Ports,
 		}
 
 		stageTasks := tasks.Build(cfg)

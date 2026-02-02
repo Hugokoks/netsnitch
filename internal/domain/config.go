@@ -11,6 +11,7 @@ type Config struct {
 
 	Scope   Scope
 	Options []int
+	Ports   []int
 }
 
 var DefaultPorts = []int{22, 80, 443}
