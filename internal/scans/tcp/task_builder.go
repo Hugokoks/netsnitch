@@ -11,20 +11,27 @@ func (b Builder) Protocol() domain.Protocol {
 	return domain.TCP
 }
 
-func (b Builder) Build(cidr string, cfg domain.Config) []tasks.Task {
-	ips, err := domain.ParseCIDR(cidr)
+func (b Builder) Build(cfg domain.Config) []tasks.Task {
+
+	ips, err := domain.ResolveScope(cfg.Scope)
 	if err != nil {
 		panic(err)
+	}
+
+	ports := cfg.Ports
+	if len(ports) == 0 {
+		ports = domain.DefaultPorts
 	}
 
 	var tasks []tasks.Task
 
 	for _, ip := range ips {
-		for _, port := range domain.DefaultPorts {
-			tasks = append(
-				tasks,
-				&Task{ip: ip, port: port, timeout: cfg.Timeout},
-			)
+		for _, port := range ports {
+			tasks = append(tasks, &Task{
+				ip:      ip,
+				port:    port,
+				timeout: cfg.Timeout,
+			})
 		}
 	}
 

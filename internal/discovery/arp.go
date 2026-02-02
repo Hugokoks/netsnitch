@@ -40,28 +40,22 @@ func NewARP(timeout time.Duration) *ARPDiscoverer {
 	}
 }
 
-func (a *ARPDiscoverer) setup(cidr string) (*ARPHandle, []net.IP, error) {
+func (a *ARPDiscoverer) setup(ips []net.IP) (*ARPHandle, error) {
 
-	ips, err := domain.ParseCIDR(cidr)
+	iface, srcIP, err := PickInterface(ips)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	iface, srcIP, err :=  PickInterface(ips)
-	if err != nil {
-		return nil, nil, err
-	}
 	fmt.Println("[ARP] iface:", iface.Name, "srcIP:", srcIP)
 
-
-	handle, err := openARPHandle(iface, srcIP)
-	return handle, ips, err
+	return openARPHandle(iface, srcIP)
 }
 
 // Discover performs ARP discovery on the given CIDR network
-func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, arpType domain.Protocol) ([]ARPReply, error) {
+func (a *ARPDiscoverer) Discover(ctx context.Context, ips []net.IP, arpType domain.Protocol) ([]ARPReply, error) {
 	fmt.Println("[ARP]Scan Start")
-	handle, ips, err := a.setup(cidr)
+	handle, err := a.setup(ips)
 	if err != nil {
 
 		return nil, fmt.Errorf("arp setup error: %w", err)

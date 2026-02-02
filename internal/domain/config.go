@@ -9,8 +9,8 @@ type Config struct {
 	Timeout     time.Duration
 	Concurrency int
 
-	Scope Scope
-	Ports []int
+	Scope   Scope
+	Options []int
 }
 
 var DefaultPorts = []int{22, 80, 443}

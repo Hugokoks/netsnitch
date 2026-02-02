@@ -3,17 +3,15 @@ package tcp
 import (
 	"context"
 	"net"
-	"time"
-
 	"netsnitch/internal/domain"
+	"time"
 )
 
 type Task struct {
-	ip    net.IP
-	port   int
 	timeout time.Duration
+	ip      net.IP
+	port    int
 }
-
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 	select {

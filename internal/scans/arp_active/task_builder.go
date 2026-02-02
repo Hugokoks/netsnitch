@@ -8,18 +8,16 @@ import (
 type Builder struct{}
 
 func (b Builder) Protocol() domain.Protocol {
-
 	return domain.ARP_ACTIVE
 }
 
-func (b Builder) Build(cidr string, cfg domain.Config) []tasks.Task {
-
-	var tasks []tasks.Task
-
-	tasks = append(tasks, &Task{timeout: cfg.Timeout, cidr: cidr})
-
-	return tasks
-
+func (b Builder) Build(cfg domain.Config) []tasks.Task {
+	return []tasks.Task{
+		&Task{
+			timeout: cfg.Timeout,
+			scope:   cfg.Scope,
+		},
+	}
 }
 
 func init() {

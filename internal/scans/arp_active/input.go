@@ -15,21 +15,20 @@ func (Parser) Protocol() domain.Protocol {
 }
 
 func (Parser) Parse(tokens []string) (input.Stage, error) {
-
 	if len(tokens) != 2 {
+		return input.Stage{}, fmt.Errorf("usage: arp <cidr|ip[,ip]>")
+	}
 
-		return input.Stage{}, fmt.Errorf("usage: arp <cidr>")
+	scope, err := input.ParseScope(tokens[1])
 
+	if err != nil {
+		return input.Stage{}, err
 	}
 
 	return input.Stage{
 		Protocol: domain.ARP_ACTIVE,
-		Scope: domain.Scope{
-			Type: domain.ScopeCIDR,
-			CIDR: tokens[1],
-		},
+		Scope:    scope,
 	}, nil
-
 }
 
 func init() {

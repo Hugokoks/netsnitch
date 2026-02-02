@@ -10,6 +10,7 @@ import (
 
 	"netsnitch/internal/domain"
 	"netsnitch/internal/engine"
+	"netsnitch/internal/input"
 	_ "netsnitch/internal/scans/arp_active"
 	_ "netsnitch/internal/scans/tcp"
 	"netsnitch/internal/tasks"
@@ -28,17 +29,31 @@ func main() {
 		os.Exit(1)
 	}
 
-	cidr := os.Args[1]
-
-	cfg := domain.Config{
-		Timeout: 10 * time.Second,
-		Type:    domain.ARP_ACTIVE,
+	// Parse input
+	query, err := input.Parse(os.Args[1:])
+	if err != nil {
+		fmt.Println("input error:", err)
+		os.Exit(1)
 	}
 
-	taks := tasks.Build(cfg, cidr)
+	//Stage → Tasks
+	var allTasks []tasks.Task
 
-	if err := engine.Run(ctx, taks, 1); err != nil {
-		fmt.Println("error:", err)
+	for _, stage := range query.Stages {
+		cfg := domain.Config{
+			Type:    stage.Protocol,
+			Timeout: 10 * time.Second,
+			Scope:   stage.Scope,
+			Options: stage.Options,
+		}
+
+		stageTasks := tasks.Build(cfg)
+		allTasks = append(allTasks, stageTasks...)
+	}
+
+	// Engine
+	if err := engine.Run(ctx, allTasks, 100); err != nil {
+		fmt.Println("engine error:", err)
 		os.Exit(1)
 	}
 }

@@ -7,38 +7,36 @@ import (
 	"time"
 )
 
-type Task struct{
+type Task struct {
 	timeout time.Duration
-	cidr string
+	scope   domain.Scope
 }
 
-func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error{
+func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 
-
-	arp := discovery.NewARP(t.timeout)
-
-	res, err := arp.Discover(ctx, t.cidr, domain.ARP_ACTIVE)
-	
+	ips, err := domain.ResolveScope(t.scope)
 	if err != nil {
 		return err
 	}
 
-	/////Send results to chan
-	for _,r := range res{
-		select{
+	arp := discovery.NewARP(t.timeout)
 
-			case <-ctx.Done():
-				return ctx.Err()
+	res, err := arp.Discover(ctx, ips, domain.ARP_ACTIVE)
+	if err != nil {
+		return err
+	}
 
-			case out <- domain.Result{
-				Protocol: domain.ARP_ACTIVE,
-				IP: r.IP,
-				MAC:r.MAC,
-				Alive: true,
-			}:
-		
+	for _, r := range res {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case out <- domain.Result{
+			Protocol: domain.ARP_ACTIVE,
+			IP:       r.IP,
+			MAC:      r.MAC,
+			Alive:    true,
+		}:
 		}
-	
 	}
 
 	return nil
