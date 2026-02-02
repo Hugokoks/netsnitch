@@ -11,7 +11,6 @@ func (b Builder) Protocol() domain.Protocol {
 	return domain.TCP
 }
 
-
 func (b Builder) Build(cidr string, cfg domain.Config) []tasks.Task {
 	ips, err := domain.ParseCIDR(cidr)
 	if err != nil {
@@ -24,7 +23,7 @@ func (b Builder) Build(cidr string, cfg domain.Config) []tasks.Task {
 		for _, port := range domain.DefaultPorts {
 			tasks = append(
 				tasks,
-				&Task{ip:ip,port: port,timeout:cfg.Timeout,},
+				&Task{ip: ip, port: port, timeout: cfg.Timeout},
 			)
 		}
 	}

@@ -24,7 +24,7 @@ func main() {
 	defer stop()
 
 	if len(os.Args) < 2 {
-		fmt.Println("usage: netsnitch <cidr>")
+		fmt.Println("usage: netsnitch <query>")
 		os.Exit(1)
 	}
 
@@ -32,12 +32,10 @@ func main() {
 
 	cfg := domain.Config{
 		Timeout: 10 * time.Second,
-		Type: domain.ARP_ACTIVE,
+		Type:    domain.ARP_ACTIVE,
 	}
 
-	taks := tasks.Build(cfg,cidr)
-
-	
+	taks := tasks.Build(cfg, cidr)
 
 	if err := engine.Run(ctx, taks, 1); err != nil {
 		fmt.Println("error:", err)
