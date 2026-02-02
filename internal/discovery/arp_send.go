@@ -10,6 +10,7 @@ import (
 )
 
 func (a *ARPDiscoverer) sendARPRequest(ctx context.Context, handle *ARPHandle, ips []net.IP) {
+	fmt.Println("[ARP] sending requests")
 
 	for _, targetIP := range ips {
 		select {

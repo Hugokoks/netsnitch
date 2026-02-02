@@ -2,12 +2,14 @@ package discovery
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
 // listenARPReplies listens for ARP replies and sends them to the channel
 func (a *ARPDiscoverer) listenARPReplies(ctx context.Context, handle *ARPHandle) {
 	defer a.wg.Done()
+	fmt.Println("[ARP] listening...")
 
 	for {
 		select {

@@ -7,6 +7,7 @@ import (
 
 type Result struct {
 	IP       net.IP
+	MAC net.HardwareAddr
 	Port     int
 	Protocol Protocol
 

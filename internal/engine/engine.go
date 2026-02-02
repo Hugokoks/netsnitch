@@ -8,7 +8,7 @@ import (
 )
 
 func Run(ctx context.Context, ts []tasks.Task, concurrency int) error {
-	fmt.Println("[engine] starting tcp scan")
+	fmt.Println("[engine] starting scan")
 
 	scheduler := NewScheduler(ctx, concurrency)
 	

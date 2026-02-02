@@ -26,7 +26,7 @@ type Stats struct {
 type ARPDiscoverer struct {
 	Timeout   time.Duration
 	stats     Stats
-	alive     map[string]net.IP
+	alive     map[string]ARPReply
 	mu        sync.Mutex
 	replyChan chan ARPReply
 	wg        sync.WaitGroup
@@ -35,7 +35,7 @@ type ARPDiscoverer struct {
 func NewARP(timeout time.Duration) *ARPDiscoverer {
 	return &ARPDiscoverer{
 		Timeout:   timeout,
-		alive:     make(map[string]net.IP),
+		alive:     make(map[string]ARPReply),
 		replyChan: make(chan ARPReply, 100),
 	}
 }
@@ -51,14 +51,16 @@ func (a *ARPDiscoverer) setup(cidr string) (*ARPHandle, []net.IP, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	fmt.Println("[ARP] iface:", iface.Name, "srcIP:", srcIP)
+
 
 	handle, err := openARPHandle(iface, srcIP)
 	return handle, ips, err
 }
 
 // Discover performs ARP discovery on the given CIDR network
-func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, cfg domain.Config) ([]net.IP, error) {
-
+func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, arpType domain.Protocol) ([]ARPReply, error) {
+	fmt.Println("[ARP]Scan Start")
 	handle, ips, err := a.setup(cidr)
 	if err != nil {
 
@@ -84,8 +86,8 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, cidr string, cfg domain.Co
 	//Send ARP requests
 	fmt.Printf("[ARP] Sending ARP requests to %d targets...\n", len(ips))
 
-	if cfg.Type == domain.ARP_ACTIVE {
-		a.sendARPRequest(ctx, handle, ips)
+	if arpType == domain.ARP_ACTIVE {
+		a.sendARPRequest(scanCtx, handle, ips)
 	}
 
 	//Wait for timeout or cancellation

@@ -34,6 +34,7 @@ func parseARPReply(data []byte, ourIP net.IP) (net.IP, net.HardwareAddr, error) 
 	if senderIP.Equal(ourIP) {
 		return nil, nil, fmt.Errorf("reply from ourselves")
 	}
+	fmt.Println("[ARP] reply from", senderIP, senderMAC)
 
 	return senderIP, senderMAC, nil
 }

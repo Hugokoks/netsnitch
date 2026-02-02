@@ -14,13 +14,6 @@ type Task struct {
 	timeout time.Duration
 }
 
-func NewTask(ip net.IP, port int, timeout time.Duration) *Task {
-	return &Task{
-		ip:      ip,
-		port:    port,
-		timeout: timeout,
-	}
-}
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 	select {

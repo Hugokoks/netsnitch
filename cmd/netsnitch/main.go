@@ -10,6 +10,7 @@ import (
 
 	"netsnitch/internal/domain"
 	"netsnitch/internal/engine"
+	_ "netsnitch/internal/scans/arp_active"
 	_ "netsnitch/internal/scans/tcp"
 	"netsnitch/internal/tasks"
 )
@@ -30,15 +31,15 @@ func main() {
 	cidr := os.Args[1]
 
 	cfg := domain.Config{
-		Timeout: 300 * time.Millisecond,
-		Type: domain.TCP,
+		Timeout: 10 * time.Second,
+		Type: domain.ARP_ACTIVE,
 	}
 
-	taskStack := tasks.Build(cfg,cidr)
+	taks := tasks.Build(cfg,cidr)
 
 	
 
-	if err := engine.Run(ctx, taskStack, 200); err != nil {
+	if err := engine.Run(ctx, taks, 1); err != nil {
 		fmt.Println("error:", err)
 		os.Exit(1)
 	}
