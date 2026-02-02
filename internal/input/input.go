@@ -11,7 +11,7 @@ func Parse(args []string) (Query, error) {
 		return Query{}, fmt.Errorf("empty input")
 	}
 
-	// rozdělíme na stage podle &&
+	// split on stages &&
 	rawStages := splitStages(args)
 
 	var stages []Stage
@@ -21,7 +21,7 @@ func Parse(args []string) (Query, error) {
 			return Query{}, fmt.Errorf("empty stage")
 		}
 
-		// první token = protokol (arp / tcp / ...)
+		// first token = protocol (arp / tcp / ...)
 		proto, err := ParseProtocol(tokens[0])
 		if err != nil {
 			return Query{}, err

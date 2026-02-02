@@ -52,7 +52,7 @@ func main() {
 	}
 
 	// Engine
-	if err := engine.Run(ctx, allTasks, 100); err != nil {
+	if err := engine.Run(ctx, allTasks, 200); err != nil {
 		fmt.Println("engine error:", err)
 		os.Exit(1)
 	}
