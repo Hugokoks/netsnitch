@@ -3,7 +3,6 @@ package tcp
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"netsnitch/internal/domain"
 	"netsnitch/internal/input"
@@ -14,55 +13,59 @@ type Parser struct{}
 func (Parser) Protocol() domain.Protocol {
 	return domain.TCP
 }
+
 func (Parser) Parse(tokens []string) (input.Stage, error) {
-	var (
-		ports []int
-		scope domain.Scope
-		err   error
-	)
-
-	switch len(tokens) {
-	case 2:
-		// tcp <scope>
-		ports = domain.DefaultPorts
-		scope, err = input.ParseScope(tokens[1])
-
-	case 3:
-		// tcp <ports> <scope>
-		ports, err = parsePorts(tokens[1])
-		if err != nil {
-			return input.Stage{}, err
-		}
-		scope, err = input.ParseScope(tokens[2])
-
-	default:
-		return input.Stage{}, fmt.Errorf("usage: tcp [ports] <cidr|ip>")
+	if len(tokens) < 2 {
+		return input.Stage{}, fmt.Errorf(
+			"usage: tcp [--ports:<ports>] [--workers:<n>] <cidr|ip>",
+		)
 	}
 
+	flags, rest, err := input.ExtractFlags(tokens[1:])
 	if err != nil {
 		return input.Stage{}, err
 	}
 
-	return input.Stage{
-		Protocol: domain.TCP,
-		Scope:    scope,
-		Ports:    ports,
-	}, nil
-}
-
-func parsePorts(s string) ([]int, error) {
-	parts := strings.Split(s, ",")
-	ports := make([]int, 0, len(parts))
-
-	for _, p := range parts {
-		port, err := strconv.Atoi(p)
-		if err != nil || port <= 0 || port > 65535 {
-			return nil, fmt.Errorf("invalid port: %s", p)
-		}
-		ports = append(ports, port)
+	if len(rest) != 1 {
+		return input.Stage{}, fmt.Errorf("exactly one target scope required")
 	}
 
-	return ports, nil
+	// ----scope ----
+	scope, err := domain.ParseScope(rest[0])
+	if err != nil {
+		return input.Stage{}, err
+	}
+
+	// ----ports----
+	portScope := domain.PortScope{
+		Type:  domain.PortsList,
+		Ports: domain.DefaultPorts,
+	}
+
+	if p, ok := flags["ports"]; ok {
+		ps, err := domain.ParsePortScope(p)
+		if err != nil {
+			return input.Stage{}, err
+		}
+		portScope = ps
+	}
+
+	// ---- workers ----
+	workers := 0
+	if w, ok := flags["workers"]; ok {
+		n, err := strconv.Atoi(w)
+		if err != nil || n <= 0 {
+			return input.Stage{}, fmt.Errorf("invalid workers value")
+		}
+		workers = n
+	}
+
+	return input.Stage{
+		Protocol:    domain.TCP,
+		Scope:       scope,
+		Ports:       portScope,
+		Concurrency: workers,
+	}, nil
 }
 
 func init() {

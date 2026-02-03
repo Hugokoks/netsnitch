@@ -18,11 +18,13 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 		panic(err)
 	}
 
-	ports := cfg.Ports
-	if len(ports) == 0 {
-		ports = domain.DefaultPorts
-	}
+	ports, err := domain.ResolvePortScope(cfg.Ports)
 
+	if err != nil {
+
+		panic(err)
+
+	}
 	var tasks []tasks.Task
 
 	for _, ip := range ips {

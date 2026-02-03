@@ -10,7 +10,7 @@ type Config struct {
 	Concurrency int
 
 	Scope Scope ////scope of ip's cidr, ip's,single ip
-	Ports []int
+	Ports PortScope
 }
 
 var DefaultPorts = []int{22, 80, 443}

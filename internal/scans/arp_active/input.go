@@ -19,7 +19,7 @@ func (Parser) Parse(tokens []string) (input.Stage, error) {
 		return input.Stage{}, fmt.Errorf("usage: arp <cidr|ip[,ip]>")
 	}
 
-	scope, err := input.ParseScope(tokens[1])
+	scope, err := domain.ParseScope(tokens[1])
 
 	if err != nil {
 		return input.Stage{}, err
