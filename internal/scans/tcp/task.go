@@ -21,6 +21,11 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 	}
 
 	res := scanTarget(ctx, t.ip, t.port, t.timeout)
-	out <- res
-	return nil
+	
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case out <- res:
+		return nil
+	}
 }
