@@ -50,9 +50,9 @@ func main() {
 		stageTasks := tasks.Build(cfg)
 		allTasks = append(allTasks, stageTasks...)
 	}
-
 	// Engine
-	if err := engine.Run(ctx, allTasks, 200); err != nil {
+	workers := 200
+	if err := engine.Run(ctx, allTasks, workers); err != nil {
 		fmt.Println("engine error:", err)
 		os.Exit(1)
 	}

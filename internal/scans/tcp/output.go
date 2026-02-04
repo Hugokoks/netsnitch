@@ -13,6 +13,7 @@ func (f TCPFormatter) Protocol() domain.Protocol {
 }
 
 func (f TCPFormatter) Format(res domain.Result) {
+
 	if !res.Open {
 		return
 	}

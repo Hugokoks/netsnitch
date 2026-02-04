@@ -5,9 +5,8 @@ import (
 )
 
 type Config struct {
-	Type        Protocol
-	Timeout     time.Duration
-	Concurrency int
+	Type    Protocol
+	Timeout time.Duration
 
 	Scope Scope ////scope of ip's cidr, ip's,single ip
 	Ports PortScope

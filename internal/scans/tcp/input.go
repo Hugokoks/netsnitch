@@ -2,7 +2,6 @@ package tcp
 
 import (
 	"fmt"
-	"strconv"
 
 	"netsnitch/internal/domain"
 	"netsnitch/internal/input"
@@ -17,7 +16,7 @@ func (Parser) Protocol() domain.Protocol {
 func (Parser) Parse(tokens []string) (input.Stage, error) {
 	if len(tokens) < 2 {
 		return input.Stage{}, fmt.Errorf(
-			"usage: tcp [--ports:<ports>] [--workers:<n>] <cidr|ip>",
+			"usage: tcp [--ports:<ports>] <cidr|ip>",
 		)
 	}
 
@@ -50,21 +49,10 @@ func (Parser) Parse(tokens []string) (input.Stage, error) {
 		portScope = ps
 	}
 
-	// ---- workers ----
-	workers := 0
-	if w, ok := flags["workers"]; ok {
-		n, err := strconv.Atoi(w)
-		if err != nil || n <= 0 {
-			return input.Stage{}, fmt.Errorf("invalid workers value")
-		}
-		workers = n
-	}
-
 	return input.Stage{
-		Protocol:    domain.TCP,
-		Scope:       scope,
-		Ports:       portScope,
-		Concurrency: workers,
+		Protocol: domain.TCP,
+		Scope:    scope,
+		Ports:    portScope,
 	}, nil
 }
 
