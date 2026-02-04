@@ -19,7 +19,8 @@ func scanTarget(
 
 	address := fmt.Sprintf("%s:%d", ip, port)
 
-	conn, err := net.DialTimeout("tcp", address, timeout)
+	d := net.Dialer{Timeout: timeout}
+	conn, err := d.DialContext(ctx, "tcp", address)
 	if err != nil {
 		return domain.Result{
 			Protocol: domain.TCP,
@@ -30,6 +31,13 @@ func scanTarget(
 	}
 	defer conn.Close()
 
+	go func() {
+		<-ctx.Done()
+		conn.Close()
+	}()
+
+	_ = conn.SetReadDeadline(time.Now().Add(timeout))
+
 	banner := ResolveBanner(conn)
 
 	return domain.Result{
@@ -38,6 +46,6 @@ func scanTarget(
 		Port:     port,
 		Open:     true,
 		Banner:   banner,
-		Service: probs.DetectService(banner),
+		Service:  probs.DetectService(banner),
 	}
 }
