@@ -20,7 +20,7 @@ to their internal logic.
 - Linux-focused networking
 
 - ## Supported Scan Types
-- 
+  
 - ARP-based host discovery
 - TCP port scanning
 - more comming...
