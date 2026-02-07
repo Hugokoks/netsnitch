@@ -57,12 +57,13 @@ sudo go run cmd/netsnitch/main.go tcp --ports:1-100 192.168.0.5
 ###CIDR notation:
 sudo go run cmd/netsnitch/main.go tcp --ports:1-100 192.168.0.0/24
 
-Port Selection:
+###Port Selection:
 --ports:all           scan all ports
 --ports:1-100         port range
 --ports:1,2,3,4,5,6   explicit port list
 
-without --ports flag it will scan predifine ports, settigns are getting from domain/config.go
+If the `--ports` flag is not provided, a predefined set of ports is scanned.
+Default settings are defined in `domain/config.go`.
 
 ###Parallel Scans:
 sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24 "&&" tcp --ports:1-100 192.168.0.1
