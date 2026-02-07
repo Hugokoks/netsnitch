@@ -47,7 +47,6 @@ the core framework logic.
 ## Usage
 
 Example commands:
-bash
 
 ###ARP Scan:
 sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24
@@ -69,6 +68,6 @@ without --ports flag it will scan predifine ports, settigns are getting from dom
 sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24 "&&" tcp --ports:1-100 192.168.0.1
 
 ###Target Selection:
-192.168.0.5            # single IP address
-192.168.0.1,192.168.0.5 # multiple IP addresses
-192.168.0.0/24         # CIDR network
+192.168.0.5            #single IP address
+192.168.0.1,192.168.0.5 #multiple IP addresses
+192.168.0.0/24         #CIDR network
