@@ -19,7 +19,9 @@ to their internal logic.
 - Clean separation between scan engine and scan implementations
 - Linux-focused networking
 
-- ## Supported Scan Types
+----
+
+## Supported Scan Types
   
 - ARP-based host discovery
 - TCP port scanning
