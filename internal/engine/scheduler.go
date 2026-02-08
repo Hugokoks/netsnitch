@@ -28,16 +28,11 @@ func NewScheduler(ctx context.Context, concurrency int) *Scheduler {
 }
 
 func (s *Scheduler) Run(ts []tasks.Task) {
-	s.startWorkers()
+
+	s.createWorkers()
 
 	go func() {
-		for _, t := range ts {
-			select {
-			case s.tasks <- t:
-			case <-s.ctx.Done():
-				break
-			}
-		}
+		s.assignTasks(ts)
 		close(s.tasks)
 	}()
 
@@ -45,7 +40,17 @@ func (s *Scheduler) Run(ts []tasks.Task) {
 	close(s.results)
 }
 
-func (s *Scheduler) startWorkers() {
+func (s *Scheduler) assignTasks(ts []tasks.Task) {
+	for _, t := range ts {
+		select {
+		case s.tasks <- t:
+		case <-s.ctx.Done():
+			return
+		}
+	}
+}
+
+func (s *Scheduler) createWorkers() {
 	for i := 0; i < s.concurrency; i++ {
 		s.wg.Add(1)
 		go s.worker()
