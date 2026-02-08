@@ -28,14 +28,17 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 
 	for _, r := range res {
 		select {
+
 		case <-ctx.Done():
 			return ctx.Err()
+
 		case out <- domain.Result{
 			Protocol: domain.ARP_ACTIVE,
 			IP:       r.IP,
 			MAC:      r.MAC,
 			Alive:    true,
 		}:
+
 		}
 	}
 

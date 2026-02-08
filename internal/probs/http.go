@@ -6,14 +6,16 @@ import (
 	"time"
 )
 
-
 func TryHTTP(conn net.Conn) string {
 	_ = conn.SetReadDeadline(time.Now().Add(300 * time.Millisecond))
 
-	host := ""
-	if addr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
-		host = addr.IP.String()
+	////check data type of addr
+	addr, ok := conn.RemoteAddr().(*net.TCPAddr)
+	if !ok {
+		return ""
 	}
+
+	host := addr.IP.String()
 
 	req := "HEAD / HTTP/1.1\r\n" +
 		"Host: " + host + "\r\n" +

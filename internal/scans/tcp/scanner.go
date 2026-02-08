@@ -31,11 +31,6 @@ func scanTarget(
 	}
 	defer conn.Close()
 
-	go func() {
-		<-ctx.Done()
-		conn.Close()
-	}()
-
 	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 
 	banner := ResolveBanner(conn)
