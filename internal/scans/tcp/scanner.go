@@ -19,6 +19,7 @@ func scanTarget(
 
 	address := fmt.Sprintf("%s:%d", ip, port)
 
+	///establish a connection to the port
 	d := net.Dialer{Timeout: timeout}
 	conn, err := d.DialContext(ctx, "tcp", address)
 	if err != nil {
@@ -31,6 +32,7 @@ func scanTarget(
 	}
 	defer conn.Close()
 
+	////set max read time
 	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 
 	banner := ResolveBanner(conn)

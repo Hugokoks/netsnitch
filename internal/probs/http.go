@@ -3,11 +3,9 @@ package probs
 import (
 	"net"
 	"strings"
-	"time"
 )
 
 func TryHTTP(conn net.Conn) string {
-	_ = conn.SetReadDeadline(time.Now().Add(300 * time.Millisecond))
 
 	////check data type of addr
 	addr, ok := conn.RemoteAddr().(*net.TCPAddr)

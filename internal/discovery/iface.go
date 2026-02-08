@@ -13,7 +13,9 @@ func PickInterface(ips []net.IP) (*net.Interface, net.IP, error) {
 	}
 
 	for _, iface := range ifaces {
-		// musí být up + mít MAC
+
+		// must be up + have MAC
+
 		if iface.Flags&net.FlagUp == 0 || len(iface.HardwareAddr) == 0 {
 			continue
 		}
@@ -26,8 +28,9 @@ func PickInterface(ips []net.IP) (*net.Interface, net.IP, error) {
 				continue
 			}
 
-			// když interface IP sedí do stejné sítě jako target
+			// if the interface IP is in the same network as the target
 			for _, targetIP := range ips {
+
 				if ipNet.Contains(targetIP) {
 					return &iface, ip, nil
 				}
