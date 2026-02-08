@@ -27,10 +27,6 @@ func NewScheduler(ctx context.Context, concurrency int) *Scheduler {
 	}
 }
 
-func (s *Scheduler) Results() <-chan domain.Result {
-	return s.results
-}
-
 func (s *Scheduler) Run(ts []tasks.Task) {
 	s.startWorkers()
 

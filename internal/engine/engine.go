@@ -12,7 +12,7 @@ func Run(ctx context.Context, ts []tasks.Task, concurrency int) error {
 
 	scheduler := NewScheduler(ctx, concurrency)
 
-	go output.ConsumeResults(ctx, scheduler.Results())
+	go output.ConsumeResults(ctx, scheduler.results)
 
 	scheduler.Run(ts)
 
