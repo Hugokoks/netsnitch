@@ -25,7 +25,7 @@ to their internal logic.
   
 - ARP-based host discovery
 - TCP port scanning
-- more comming...
+- more coming...
 
 ----
 
