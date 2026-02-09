@@ -6,12 +6,6 @@ import (
 	"strings"
 )
 
-/////Port flag
-/////--port:5 ///single port
-/////--port:5-10 ////port range
-/////--port:1,3,44,66,5000 ////list of ports
-/////--port:all ////all ports
-
 type PortScopeType int
 
 const (

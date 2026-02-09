@@ -2,8 +2,9 @@ package arp_active
 
 import (
 	"context"
-	"netsnitch/internal/discovery"
 	"netsnitch/internal/domain"
+	"netsnitch/internal/scans/arp/discovery"
+
 	"time"
 )
 
