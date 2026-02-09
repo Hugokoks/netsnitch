@@ -54,26 +54,25 @@ ARP Scan:
 sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24
 
 TCP port Scan:
+```bash
 sudo go run cmd/netsnitch/main.go tcp --p 1-100 192.168.0.5
-
+```
 CIDR notation:
+```bash 
 sudo go run cmd/netsnitch/main.go tcp --p 1-100 192.168.0.0/24
-
+```
 Port Selection:
 - --p all           scan all ports
 - --p 1-100         port range
 - --p 1,2,3,4,5,6   explicit port list
 
-- --p:all           scan all ports
-- --p:1-100         port range
-- --p:1,2,3,4,5,6   explicit port list
-
 If the `--ports` flag is not provided, a predefined set of ports is scanned.
 Default settings are defined in `domain/config.go`.
 
 Parallel Scans:
+```bash
 sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24 "&&" tcp --p 1-100 192.168.0.1
-
+```
 Target Selection:
 - 192.168.0.5                 single IP address
 - 192.168.0.1,192.168.0.5     multiple IP addresses
