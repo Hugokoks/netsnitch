@@ -14,46 +14,41 @@ func (Parser) Protocol() domain.Protocol {
 	return domain.TCP
 }
 
-func (Parser) Parse(tokens []string) (input.Stage, error) {
+func (Parser) Parse(tokens []string) (domain.Config, error) {
 	if len(tokens) < 2 {
-		return input.Stage{}, fmt.Errorf(
+		return domain.Config{}, fmt.Errorf(
 			"usage: tcp [--p <p>] <cidr|ip>",
 		)
 	}
 
 	flags, rest, err := input.ExtractFlags(tokens[1:])
 	if err != nil {
-		return input.Stage{}, err
+		return domain.Config{}, err
 	}
 
 	if len(rest) != 1 {
-		return input.Stage{}, fmt.Errorf("exactly one target scope required")
+		return domain.Config{}, fmt.Errorf("exactly one target scope required")
 	}
 
 	// ----scope ----
 	scope, err := domain.ParseScope(rest[0])
 	if err != nil {
-		return input.Stage{}, err
+		return domain.Config{}, err
 	}
 
 	// ----ports----
-	portScope := domain.PortScope{
-		Type:  domain.PortsList,
-		Ports: domain.DefaultPorts,
-	}
-
+	var portScope domain.PortScope
 	if p, ok := flags["p"]; ok {
 		ps, err := domain.ParsePortScope(p)
-
 		if err != nil {
-			return input.Stage{}, err
+			return domain.Config{}, err
 		}
 
 		portScope = ps
 	}
 
 	// ----timeout-----
-	timeout := domain.DefaultTimeout
+	var timeout time.Duration
 
 	if t, ok := flags["t"]; ok {
 		if d, err := time.ParseDuration(t); err == nil {
@@ -61,12 +56,28 @@ func (Parser) Parse(tokens []string) (input.Stage, error) {
 		}
 	}
 
-	return input.Stage{
-		Protocol: domain.TCP,
-		Scope:    scope,
-		Ports:    portScope,
-		Timeout:  timeout,
+	return domain.Config{
+		Type:    domain.TCP,
+		Scope:   scope,
+		Ports:   portScope,
+		Timeout: timeout,
 	}, nil
+
+}
+func (Parser) ApplyDefaults(cfg *domain.Config) {
+
+	if cfg.Timeout <= 0 {
+		cfg.Timeout = domain.DefaultTimeout
+	}
+	if cfg.Mode == "" {
+		cfg.Mode = domain.FULL
+	}
+	if len(cfg.Ports.Ports) == 0 && cfg.Ports.Type != domain.PortsRange {
+		cfg.Ports = domain.PortScope{
+			Type:  domain.PortsList,
+			Ports: domain.DefaultPorts,
+		}
+	}
 }
 
 func init() {

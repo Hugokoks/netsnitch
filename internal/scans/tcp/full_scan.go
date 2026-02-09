@@ -10,7 +10,7 @@ import (
 	"netsnitch/internal/probs"
 )
 
-func scanTarget(
+func fullScan(
 	ctx context.Context,
 	ip net.IP,
 	port int,

@@ -7,10 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"netsnitch/internal/domain"
 	"netsnitch/internal/engine"
 	"netsnitch/internal/input"
-	_ "netsnitch/internal/scans/arp_active"
+	_ "netsnitch/internal/scans/arp"
 	_ "netsnitch/internal/scans/tcp"
 	"netsnitch/internal/tasks"
 )
@@ -38,18 +37,8 @@ func main() {
 	//Stage → Tasks
 	var allTasks []tasks.Task
 
-	for _, stage := range query.Stages {
+	for _, cfg := range query.Configs {
 
-		if stage.Timeout == 0 {
-			stage.Timeout = domain.DefaultTimeout
-		}
-
-		cfg := domain.Config{
-			Type:    stage.Protocol,
-			Timeout: stage.Timeout,
-			Scope:   stage.Scope,
-			Ports:   stage.Ports,
-		}
 		fmt.Println(cfg.Timeout)
 		////build task
 		stageTasks := tasks.Build(cfg)

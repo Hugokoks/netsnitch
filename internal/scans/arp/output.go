@@ -10,7 +10,7 @@ type ARPFormatter struct{}
 
 func (f ARPFormatter) Protocol() domain.Protocol {
 
-	return domain.ARP_ACTIVE
+	return domain.ARP
 }
 
 func (f ARPFormatter) Format(res domain.Result) {

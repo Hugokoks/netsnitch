@@ -7,7 +7,8 @@ import (
 
 type Parser interface {
 	Protocol() domain.Protocol
-	Parse(tokens []string) (Stage, error)
+	Parse(tokens []string) (domain.Config, error)
+	ApplyDefaults(cfg *domain.Config)
 }
 
 var parsers = map[domain.Protocol]Parser{}

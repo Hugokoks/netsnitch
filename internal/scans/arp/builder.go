@@ -8,7 +8,7 @@ import (
 type Builder struct{}
 
 func (b Builder) Protocol() domain.Protocol {
-	return domain.ARP_ACTIVE
+	return domain.ARP
 }
 
 func (b Builder) Build(cfg domain.Config) []tasks.Task {
@@ -16,6 +16,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 		&Task{
 			timeout: cfg.Timeout,
 			scope:   cfg.Scope,
+			Mode:    cfg.Mode,
 		},
 	}
 }

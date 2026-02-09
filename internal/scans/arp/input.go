@@ -11,34 +11,34 @@ type Parser struct{}
 
 func (Parser) Protocol() domain.Protocol {
 
-	return domain.ARP_ACTIVE
+	return domain.ARP
 
 }
 
-func (Parser) Parse(tokens []string) (input.Stage, error) {
+func (Parser) Parse(tokens []string) (domain.Config, error) {
 
 	if len(tokens) < 2 {
-		return input.Stage{}, fmt.Errorf("usage: arp <cidr>")
+		return domain.Config{}, fmt.Errorf("usage: arp <cidr>")
 	}
 
 	flags, rest, err := input.ExtractFlags(tokens[1:])
 
 	if err != nil {
-		return input.Stage{}, err
+		return domain.Config{}, err
 	}
 
 	if len(rest) != 1 {
-		return input.Stage{}, fmt.Errorf("exactly one target scope required")
+		return domain.Config{}, fmt.Errorf("exactly one target scope required")
 	}
 
 	//// ---- scope ----
 	scope, err := domain.ParseScope(rest[0])
 	if err != nil {
-		return input.Stage{}, err
+		return domain.Config{}, err
 	}
 
 	// ----timeout-----
-	timeout := domain.DefaultTimeout
+	var timeout time.Duration
 
 	if t, ok := flags["t"]; ok {
 		if d, err := time.ParseDuration(t); err == nil {
@@ -46,11 +46,22 @@ func (Parser) Parse(tokens []string) (input.Stage, error) {
 		}
 	}
 
-	return input.Stage{
-		Protocol: domain.ARP_ACTIVE,
-		Scope:    scope,
-		Timeout:  timeout,
+	return domain.Config{
+		Type:    domain.ARP,
+		Scope:   scope,
+		Timeout: timeout,
 	}, nil
+}
+func (Parser) ApplyDefaults(cfg *domain.Config) {
+
+	if cfg.Timeout <= 0 {
+		cfg.Timeout = domain.DefaultTimeout
+	}
+
+	if cfg.Mode == "" {
+		cfg.Mode = domain.ARP_ACTIVE
+	}
+
 }
 
 func init() {

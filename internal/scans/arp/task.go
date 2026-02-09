@@ -10,6 +10,7 @@ import (
 type Task struct {
 	timeout time.Duration
 	scope   domain.Scope
+	Mode    domain.ScanMode
 }
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
@@ -21,7 +22,7 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 
 	arp := discovery.NewARP(t.timeout)
 
-	res, err := arp.Discover(ctx, ips, domain.ARP_ACTIVE)
+	res, err := arp.Discover(ctx, ips, t.Mode)
 	if err != nil {
 		return err
 	}
@@ -33,7 +34,7 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 			return ctx.Err()
 
 		case out <- domain.Result{
-			Protocol: domain.ARP_ACTIVE,
+			Protocol: domain.ARP,
 			IP:       r.IP,
 			MAC:      r.MAC,
 			Alive:    true,

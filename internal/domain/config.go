@@ -10,7 +10,8 @@ type Config struct {
 
 	Scope Scope ////scope of ip's cidr, ip's,single ip
 	Ports PortScope
+	Mode  ScanMode
 }
 
 var DefaultPorts = []int{22, 80, 443}
-var DefaultTimeout = 600 * time.Millisecond
+var DefaultTimeout = 400 * time.Millisecond

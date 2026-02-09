@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+type Query struct {
+	Configs []domain.Config
+}
+
 func Parse(args []string) (Query, error) {
 	if len(args) == 0 {
 		return Query{}, fmt.Errorf("empty input")
@@ -14,7 +18,7 @@ func Parse(args []string) (Query, error) {
 	// split on stages
 	rawStages := splitStages(args)
 
-	var stages []Stage
+	var configs []domain.Config
 
 	for _, tokens := range rawStages {
 		if len(tokens) == 0 {
@@ -35,15 +39,18 @@ func Parse(args []string) (Query, error) {
 		////then use this parser to parse tokens
 		////According to the protocol input blueprint
 		////Parse method will return input.Stage struct with data
-		stage, err := parser.Parse(tokens)
+		config, err := parser.Parse(tokens)
 		if err != nil {
 			return Query{}, err
 		}
 
-		stages = append(stages, stage)
+		////Set defualt values of empty parameters
+		parser.ApplyDefaults(&config)
+
+		configs = append(configs, config)
 	}
 
-	return Query{Stages: stages}, nil
+	return Query{Configs: configs}, nil
 }
 
 // // return with multiple commands && [[arp, 192.168.0.0/24], [tcp, 22,444,420, 192.168.0.3]]
@@ -74,7 +81,7 @@ func ParseProtocol(s string) (domain.Protocol, error) {
 	case "tcp":
 		return domain.TCP, nil
 	case "arp":
-		return domain.ARP_ACTIVE, nil
+		return domain.ARP, nil
 	default:
 		return "", fmt.Errorf("unknown protocol: %s", s)
 	}

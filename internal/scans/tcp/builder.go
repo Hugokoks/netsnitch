@@ -33,6 +33,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 				ip:      ip,
 				port:    port,
 				timeout: cfg.Timeout,
+				mode:    cfg.Mode,
 			})
 		}
 	}

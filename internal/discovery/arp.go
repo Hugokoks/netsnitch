@@ -53,7 +53,7 @@ func (a *ARPDiscoverer) setup(ips []net.IP) (*ARPHandle, error) {
 }
 
 // Discover performs ARP discovery on the given CIDR network
-func (a *ARPDiscoverer) Discover(ctx context.Context, ips []net.IP, arpType domain.Protocol) ([]ARPReply, error) {
+func (a *ARPDiscoverer) Discover(ctx context.Context, ips []net.IP, arpType domain.ScanMode) ([]ARPReply, error) {
 	fmt.Println("[ARP]Scan Start")
 	handle, err := a.setup(ips)
 	if err != nil {
