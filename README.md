@@ -81,6 +81,6 @@ Target Selection:
 Timeout Selection:
 - --t 200ms    200 miliseconds
 - --t 2s       2 seconds 
-- --t 1min     1 minutes 
+- --t 1m       1 minutes 
 
 
