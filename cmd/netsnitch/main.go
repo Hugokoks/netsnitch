@@ -40,9 +40,10 @@ func main() {
 	var allTasks []tasks.Task
 
 	for _, stage := range query.Stages {
+
 		cfg := domain.Config{
 			Type:    stage.Protocol,
-			Timeout: 10 * time.Second,
+			Timeout: 300 * time.Microsecond,
 			Scope:   stage.Scope,
 			Ports:   stage.Ports,
 		}

@@ -66,6 +66,7 @@ func (s *Scheduler) worker() {
 			return
 
 		case task, ok := <-s.tasks:
+
 			if !ok {
 				return
 			}

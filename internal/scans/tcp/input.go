@@ -41,7 +41,7 @@ func (Parser) Parse(tokens []string) (input.Stage, error) {
 		Ports: domain.DefaultPorts,
 	}
 
-	if p, ok := flags["ports"]; ok {
+	if p, ok := flags["p"]; ok {
 		ps, err := domain.ParsePortScope(p)
 		if err != nil {
 			return input.Stage{}, err

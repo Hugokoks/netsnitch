@@ -21,7 +21,9 @@ func scanTarget(
 
 	///establish a connection to the port
 	d := net.Dialer{Timeout: timeout}
+
 	conn, err := d.DialContext(ctx, "tcp", address)
+
 	if err != nil {
 		return domain.Result{
 			Protocol: domain.TCP,
@@ -30,13 +32,20 @@ func scanTarget(
 			Open:     false,
 		}
 	}
+
+	////listening for context <-ctx.Done() CTRL + C
+	////No able to check for <-ctx.Done() while reading banner from port
+	go func() {
+		<-ctx.Done()
+		conn.Close()
+	}()
+
 	defer conn.Close()
 
 	////set max read time
 	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 
 	banner := ResolveBanner(conn)
-
 	return domain.Result{
 		Protocol: domain.TCP,
 		IP:       ip,

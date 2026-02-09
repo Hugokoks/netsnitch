@@ -27,6 +27,3 @@ func DetectService(banner string) string {
 		return "unknown"
 	}
 }
-
-
-

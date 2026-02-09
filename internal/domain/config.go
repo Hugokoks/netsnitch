@@ -13,3 +13,4 @@ type Config struct {
 }
 
 var DefaultPorts = []int{22, 80, 443}
+var DefaultTimeout = 400 * time.Microsecond
