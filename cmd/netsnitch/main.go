@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"netsnitch/internal/domain"
 	"netsnitch/internal/engine"
@@ -41,13 +40,18 @@ func main() {
 
 	for _, stage := range query.Stages {
 
+		if stage.Timeout == 0 {
+			stage.Timeout = domain.DefaultTimeout
+		}
+
 		cfg := domain.Config{
 			Type:    stage.Protocol,
-			Timeout: 300 * time.Microsecond,
+			Timeout: stage.Timeout,
 			Scope:   stage.Scope,
 			Ports:   stage.Ports,
 		}
-
+		fmt.Println(cfg.Timeout)
+		////build task
 		stageTasks := tasks.Build(cfg)
 		allTasks = append(allTasks, stageTasks...)
 	}

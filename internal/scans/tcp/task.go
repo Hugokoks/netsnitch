@@ -15,13 +15,6 @@ type Task struct {
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 
-	/////TO DO: try to remove this select blog and see how context is behaving after CTRL + C
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	default:
-	}
-
 	res := scanTarget(ctx, t.ip, t.port, t.timeout)
 
 	select {

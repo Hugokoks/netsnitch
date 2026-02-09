@@ -2,6 +2,7 @@ package tcp
 
 import (
 	"fmt"
+	"time"
 
 	"netsnitch/internal/domain"
 	"netsnitch/internal/input"
@@ -16,7 +17,7 @@ func (Parser) Protocol() domain.Protocol {
 func (Parser) Parse(tokens []string) (input.Stage, error) {
 	if len(tokens) < 2 {
 		return input.Stage{}, fmt.Errorf(
-			"usage: tcp [--ports:<ports>] <cidr|ip>",
+			"usage: tcp [--p <p>] <cidr|ip>",
 		)
 	}
 
@@ -43,16 +44,28 @@ func (Parser) Parse(tokens []string) (input.Stage, error) {
 
 	if p, ok := flags["p"]; ok {
 		ps, err := domain.ParsePortScope(p)
+
 		if err != nil {
 			return input.Stage{}, err
 		}
+
 		portScope = ps
+	}
+
+	// ----timeout-----
+	timeout := domain.DefaultTimeout
+
+	if t, ok := flags["t"]; ok {
+		if d, err := time.ParseDuration(t); err == nil {
+			timeout = d
+		}
 	}
 
 	return input.Stage{
 		Protocol: domain.TCP,
 		Scope:    scope,
 		Ports:    portScope,
+		Timeout:  timeout,
 	}, nil
 }
 
