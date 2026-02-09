@@ -60,13 +60,13 @@ CIDR notation:
 sudo go run cmd/netsnitch/main.go tcp --p 1-100 192.168.0.0/24
 
 Port Selection:
---p all           scan all ports
---p 1-100         port range
---p 1,2,3,4,5,6   explicit port list
+- --p all           scan all ports
+- --p 1-100         port range
+- --p 1,2,3,4,5,6   explicit port list
 
---p:all           scan all ports
---p:1-100         port range
---p:1,2,3,4,5,6   explicit port list
+- --p:all           scan all ports
+- --p:1-100         port range
+- --p:1,2,3,4,5,6   explicit port list
 
 If the `--ports` flag is not provided, a predefined set of ports is scanned.
 Default settings are defined in `domain/config.go`.
@@ -75,13 +75,13 @@ Parallel Scans:
 sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24 "&&" tcp --p 1-100 192.168.0.1
 
 Target Selection:
-192.168.0.5                 single IP address
-192.168.0.1,192.168.0.5     multiple IP addresses
-192.168.0.0/24              CIDR network
+- 192.168.0.5                 single IP address
+- 192.168.0.1,192.168.0.5     multiple IP addresses
+- 192.168.0.0/24              CIDR network
 
 Timeout Selection:
---t 200ms    200 miliseconds
---t 2s       2 seconds 
---t 1min     1 minutes 
+- --t 200ms    200 miliseconds
+- --t 2s       2 seconds 
+- --t 1min     1 minutes 
 
 
