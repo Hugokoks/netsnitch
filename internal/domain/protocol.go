@@ -10,7 +10,7 @@ const (
 	ARP  Protocol = "arp"
 
 	FULL        ScanMode = "f"
-	STEALH      ScanMode = "s"
+	STEALTH     ScanMode = "s"
 	ARP_ACTIVE  ScanMode = "active"
 	ARP_PASSIVE ScanMode = "passive"
 )

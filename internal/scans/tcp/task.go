@@ -12,12 +12,21 @@ type Task struct {
 	ip      net.IP
 	port    int
 	mode    domain.ScanMode
+	mgr     *StealthManager
 }
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 
 	/////TODO: Make switch based on scan mode - full, stealth, ...
-	res := fullScan(ctx, t.ip, t.port, t.timeout)
+
+	var res domain.Result
+	switch t.mode {
+
+	case domain.STEALTH:
+		res = t.mgr.Scan(t.ip, t.port, t.timeout)
+	case domain.FULL:
+		res = fullScan(ctx, t.ip, t.port, t.timeout)
+	}
 
 	select {
 	case <-ctx.Done():

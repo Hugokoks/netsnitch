@@ -56,14 +56,31 @@ func (Parser) Parse(tokens []string) (domain.Config, error) {
 		}
 	}
 
+	// ----mode----
+
+	var mode domain.ScanMode
+	if m, ok := flags["mode"]; ok {
+
+		parseMode, err := domain.ParseScanMode(m)
+		if err != nil {
+
+			return domain.Config{}, fmt.Errorf("mode %s doesn't exist", m)
+
+		}
+		mode = parseMode
+
+	}
+
 	return domain.Config{
 		Type:    domain.TCP,
 		Scope:   scope,
 		Ports:   portScope,
 		Timeout: timeout,
+		Mode:    mode,
 	}, nil
 
 }
+
 func (Parser) ApplyDefaults(cfg *domain.Config) {
 
 	if cfg.Timeout <= 0 {

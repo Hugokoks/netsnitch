@@ -25,6 +25,15 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 
 	}
 
+	var mgr *StealthManager
+
+	////Open network socket only onc
+	if cfg.Mode == domain.STEALTH {
+		mgr, err = NewStealthManager()
+		if err != nil {
+			panic(err)
+		}
+	}
 	var tasks []tasks.Task
 
 	for _, ip := range ips {
@@ -34,6 +43,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 				port:    port,
 				timeout: cfg.Timeout,
 				mode:    cfg.Mode,
+				mgr:     mgr,
 			})
 		}
 	}
