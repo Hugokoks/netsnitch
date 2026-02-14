@@ -12,7 +12,7 @@ import (
 )
 
 type StealthManager struct {
-	fd      int ////file description
+	fd      syscall.Handle ////file description
 	pending map[string]chan bool
 	mu      sync.Mutex
 	closeCh chan struct{}
@@ -65,6 +65,30 @@ func (m *StealthManager) listen() {
 		m.handlePacket(buf[:n])
 	}
 }
+
+//	----SYN PACKET ----
+//
+// [0]	Source Port (High)	0x9C	High byte of 40000 (0x9C40)
+// [1]	Source Port (Low)	0x40	Low byte of 40000
+// [2]	Dest Port (High)	0x00	High byte of 80 (0x0050)
+// [3]	Dest Port (Low)	0x50	Low byte of 80
+// [4]	Sequence No (B3)	0xDE	1st byte of random seq (e.g., 0xDEADBEEF)
+// [5]	Sequence No (B2)	0xAD	2nd byte
+// [6]	Sequence No (B1)	0xBE	3rd byte
+// [7]	Sequence No (B0)	0xEF	4th byte
+// [8]	Ack No (B3)	0x00	Always 0 in a SYN packet
+// [9]	Ack No (B2)	0x00
+// [10]	Ack No (B1)	0x00
+// [11]	Ack No (B0)	0x00
+// [12]	Data Offset	0x50	5 << 4 (Header is 20 bytes long)
+// [13]	Flags	0x02	SYN flag enabled
+// [14]	Window Size (High)	0xFF	High byte of 65535 (0xFFFF)
+// [15]	Window Size (Low)	0xFF	Low byte of 65535
+// [16]	Checksum (High)	0x??	Calculated by tcpChecksum function
+// [17]	Checksum (Low)	0x??	Calculated by tcpChecksum function
+// [18]	Urgent Ptr (High)	0x00	Not used (0)
+// [19]	Urgent Ptr (Low)	0x00	Not used (0)
+
 func (m *StealthManager) sendSYN(dstIP net.IP, dstPort int) error {
 
 	// Get correct local IP used to reach destination
@@ -73,12 +97,17 @@ func (m *StealthManager) sendSYN(dstIP net.IP, dstPort int) error {
 		return err
 	}
 
+	////waiting for res 40000 - 60000
 	srcPort := uint16(40000 + rand.Intn(20000))
+
+	////res SYN/ACK seq + 1
 	seq := rand.Uint32()
 
 	tcp := make([]byte, 20)
 
 	// Source port
+
+	//////Convert uint16 to 2 bytes
 	binary.BigEndian.PutUint16(tcp[0:2], srcPort)
 
 	// Destination port
@@ -88,9 +117,11 @@ func (m *StealthManager) sendSYN(dstIP net.IP, dstPort int) error {
 	binary.BigEndian.PutUint32(tcp[4:8], seq)
 
 	// Acknowledgment number (0 for SYN)
+	////SYN/ACK Seq + 1
 	binary.BigEndian.PutUint32(tcp[8:12], 0)
 
 	// Data offset (5 * 4 = 20 bytes), no options
+	// receiver knows where data starts
 	tcp[12] = (5 << 4)
 
 	// SYN flag
@@ -115,6 +146,7 @@ func (m *StealthManager) sendSYN(dstIP net.IP, dstPort int) error {
 	}
 	copy(addr.Addr[:], dstIP.To4())
 
+	////Send to network
 	return syscall.Sendto(m.fd, tcp, 0, addr)
 }
 
@@ -144,6 +176,7 @@ func (m *StealthManager) handlePacket(packet []byte) {
 		ch <- false
 	}
 }
+
 func (m *StealthManager) Scan(
 	ip net.IP,
 	port int,
@@ -203,6 +236,15 @@ func (m *StealthManager) Scan(
 		}
 	}
 }
+
+// ---- TCP PSEUDO-HEADER (for Checksum) ----
+//
+// [0-3]   Source IP Address
+// [4-7]   Destination IP Address
+// [8]     Zero Byte (Reserved)
+// [9]     Protocol (6 for TCP)
+// [10-11] TCP Length (20 bytes for our SYN)
+// [12+]   The actual 20-byte TCP Header from above
 func tcpChecksum(srcIP, dstIP net.IP, tcp []byte) uint16 {
 
 	pseudoHeader := make([]byte, 12+len(tcp))
@@ -230,19 +272,33 @@ func tcpChecksum(srcIP, dstIP net.IP, tcp []byte) uint16 {
 
 func checksum(data []byte) uint16 {
 	var sum uint32
-
+	// Process data in 16-bit chunks (word by word).
+	// We use a uint32 for the sum to capture any "overflow" (carries)
+	// that exceed the 16-bit limit during addition.
 	for i := 0; i+1 < len(data); i += 2 {
-		sum += uint32(binary.BigEndian.Uint16(data[i:]))
+		bytesOfTwo := binary.BigEndian.Uint16(data[i : i+2])
+		sum += uint32(bytesOfTwo)
 	}
-
+	// Handle the "Odd Byte" case.
+	// If the data length is odd, treat the last byte as the most significant
+	// byte of a 16-bit word (padded with a zero byte at the end).
 	if len(data)%2 == 1 {
 		sum += uint32(data[len(data)-1]) << 8
 	}
+	// The "Carry-Around" Loop (1's Complement Arithmetic).
+	// In TCP checksumming, any bits that overflow past bit 16 must be
+	// added back to the bottom 16 bits.
+	// (sum >> 16) extracts the carry, (sum & 0xFFFF) keeps the bottom 16 bits.
 
+	//[0000000000000001,0000000000000000]
+	//[0000000000000000,0000000000000001]
 	for (sum >> 16) > 0 {
+
+		// Take the lower 16 bits and sum them with the upper 16 bits
 		sum = (sum & 0xFFFF) + (sum >> 16)
 	}
 
+	//Binary negation
 	return ^uint16(sum)
 }
 
