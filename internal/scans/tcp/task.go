@@ -8,12 +8,13 @@ import (
 )
 
 type Task struct {
-	timeout time.Duration
-	ip      net.IP
-	port    int
-	mode    domain.ScanMode
-	render  domain.RenderType
-	mgr     *StealthManager
+	timeout  time.Duration
+	ip       net.IP
+	port     int
+	mode     domain.ScanMode
+	render   domain.RenderType
+	mgr      *StealthManager
+	openOnly bool
 }
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
@@ -27,6 +28,10 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 		res = t.mgr.Scan(t.ip, t.port, t.timeout)
 	case domain.FULL:
 		res = fullScan(ctx, t.ip, t.port, t.timeout)
+	}
+
+	if t.openOnly && !res.Open {
+		return nil
 	}
 	res.RenderType = t.render
 

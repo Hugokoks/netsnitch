@@ -41,7 +41,7 @@ func out(res domain.Result) error {
 	output := renderer(f, res)
 
 	////TODO: add file output
-	fmt.Println(output)
+	fmt.Print(output)
 
 	return nil
 

@@ -8,10 +8,11 @@ type Config struct {
 	Type    Protocol
 	Timeout time.Duration
 
-	Scope  Scope ////scope of ip's cidr, ip's,single ip
-	Render RenderType
-	Ports  PortScope
-	Mode   ScanMode
+	Scope    Scope
+	Render   RenderType
+	Ports    PortScope
+	Mode     ScanMode
+	OpenOnly bool
 }
 
 func NewDefaultConfig() Config {

@@ -19,8 +19,10 @@ func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error 
 		return fmt.Errorf("usage: tcp [--p <p>] <cidr|ip>")
 	}
 
+	ipToken := rest[len(rest)-1]
+
 	// ----scope ----
-	scope, err := domain.ParseScope(rest[1])
+	scope, err := domain.ParseScope(ipToken)
 	if err != nil {
 		return err
 	}
@@ -37,6 +39,15 @@ func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error 
 	if m, ok := flags["mode"]; ok {
 		mode, _ = domain.ParseScanMode(m)
 	}
+
+	// ----OpenOnly---
+
+	if _, ok := flags["open"]; ok {
+
+		cfg.OpenOnly = true
+
+	}
+
 	// ----apply settings ----
 	cfg.Mode = mode
 	cfg.Ports = portScope

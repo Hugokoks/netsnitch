@@ -15,12 +15,16 @@ func (f TCPFormatter) Protocol() domain.Protocol {
 
 func (f TCPFormatter) FormatRows(res domain.Result) string {
 
-	if !res.Open {
-		return ""
+	var output string
+
+	status := "CLOSED"
+	if res.Open {
+		status = "OPEN"
 	}
 
-	output := fmt.Sprintf(
-		"[OPEN] %s:%d (%s) [%s]\n",
+	output = fmt.Sprintf(
+		"[%s] %s:%d (%s) [%s]\n",
+		status,
 		res.IP,
 		res.Port,
 		res.Protocol,
@@ -36,8 +40,9 @@ func (f TCPFormatter) FormatRows(res domain.Result) string {
 
 func (f TCPFormatter) FormatJson(res domain.Result) string {
 
-	data, _ := json.Marshal(res)
-	return string(data) + "\n"
+	output, _ := json.Marshal(res)
+	return string(output) + "\n"
+
 }
 
 // Automatically register formatter on package load

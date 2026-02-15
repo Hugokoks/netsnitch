@@ -9,6 +9,15 @@ import (
 
 type Flags map[string]string
 
+// flagsWithValue defines which flags require a value.
+// Boolean-only flags (like --open) are not listed here.
+var flagsWithValue = map[string]bool{
+	"p":      true,
+	"mode":   true,
+	"render": true,
+	"t":      true,
+}
+
 func ExtractFlags(tokens []string) (Flags, []string, error) {
 	flags := make(Flags)
 	var rest []string
@@ -16,29 +25,34 @@ func ExtractFlags(tokens []string) (Flags, []string, error) {
 	for i := 0; i < len(tokens); i++ {
 		t := tokens[i]
 
+		// Check if token is a long flag (--something)
 		if strings.HasPrefix(t, "--") {
-			parts := strings.SplitN(t[2:], ":", 2)
 
-			key := parts[0]
+			key := t[2:]
 
-			if len(parts) == 2 {
-				// --key:value
-				flags[key] = parts[1]
-				continue
-			}
+			// If flag expects a value, consume the next token
+			if flagsWithValue[key] {
 
-			// --key value
-			if i+1 < len(tokens) && !strings.HasPrefix(tokens[i+1], "--") {
+				if i+1 >= len(tokens) {
+					return nil, nil, fmt.Errorf("flag --%s requires a value", key)
+				}
+
+				// Prevent another flag from being used as value
+				if strings.HasPrefix(tokens[i+1], "--") {
+					return nil, nil, fmt.Errorf("flag --%s requires a value", key)
+				}
+
 				flags[key] = tokens[i+1]
-				i++
+				i++ // Skip value token
 				continue
 			}
 
-			// --flag without value
+			// Boolean flag (no value expected)
 			flags[key] = "true"
 			continue
 		}
 
+		// Non-flag tokens (protocol, target, etc.)
 		rest = append(rest, t)
 	}
 
@@ -46,25 +60,24 @@ func ExtractFlags(tokens []string) (Flags, []string, error) {
 }
 
 func applyGlobalFlags(cfg *domain.Config, flags Flags) error {
-	// Timeout
-	if t, ok := flags["t"]; ok {
-		d, err := time.ParseDuration(t)
+
+	// Parse timeout flag
+	if str, ok := flags["t"]; ok {
+		dur, err := time.ParseDuration(str)
 		if err != nil {
-			return fmt.Errorf("wrong time expression %s", t)
+			return fmt.Errorf("invalid time expression %s", str)
 		}
-		cfg.Timeout = d
+		cfg.Timeout = dur
 	}
 
-	//render rows/json
-	if r, ok := flags["render"]; ok {
-
-		r, err := domain.ParseRenderType(r)
+	// Parse render type (rows/json)
+	if str, ok := flags["render"]; ok {
+		render, err := domain.ParseRenderType(str)
 		if err != nil {
-			return fmt.Errorf("wrong render expression %s", r)
+			return fmt.Errorf("invalid render expression %s", str)
 		}
-
+		cfg.Render = render
 	}
 
 	return nil
-
 }

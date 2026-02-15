@@ -1,6 +1,9 @@
 package domain
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func ParseScanMode(s string) (ScanMode, error) {
 
@@ -37,4 +40,15 @@ func ParseRenderType(s string) (RenderType, error) {
 
 	}
 
+}
+
+func ParseProtocol(s string) (Protocol, error) {
+	switch strings.ToLower(s) {
+	case "tcp":
+		return TCP, nil
+	case "arp":
+		return ARP, nil
+	default:
+		return "", fmt.Errorf("unknown protocol: %s", s)
+	}
 }

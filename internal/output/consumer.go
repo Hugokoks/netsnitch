@@ -34,18 +34,9 @@ func (c *Consumer) Consume() {
 
 	defer c.wg.Done()
 
-	for {
-		select {
-		case <-c.ctx.Done():
-			return
+	for res := range c.results {
 
-		case res, ok := <-c.results:
-			if !ok {
-				return
-			}
+		out(res)
 
-			out(res)
-
-		}
 	}
 }

@@ -12,7 +12,7 @@ import (
 )
 
 type StealthManager struct {
-	fd      syscall.Handle ////file description
+	fd      int ////file description
 	pending map[string]chan bool
 	mu      sync.Mutex
 	closeCh chan struct{}

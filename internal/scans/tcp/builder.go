@@ -39,12 +39,13 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 	for _, ip := range ips {
 		for _, port := range ports {
 			tasks = append(tasks, &Task{
-				ip:      ip,
-				port:    port,
-				timeout: cfg.Timeout,
-				mode:    cfg.Mode,
-				render:  cfg.Render,
-				mgr:     mgr,
+				ip:       ip,
+				port:     port,
+				timeout:  cfg.Timeout,
+				mode:     cfg.Mode,
+				render:   cfg.Render,
+				mgr:      mgr,
+				openOnly: cfg.OpenOnly,
 			})
 		}
 	}
