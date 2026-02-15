@@ -3,6 +3,7 @@ package input
 import (
 	"fmt"
 	"netsnitch/internal/domain"
+	"strings"
 )
 
 type Query struct {
@@ -35,12 +36,10 @@ func Parse(args []string) (Query, error) {
 		config := domain.NewDefaultConfig()
 
 		// first token = protocol (arp / tcp / ...)
-		proto, err := domain.ParseProtocol(rest[0])
+		proto, err := ParseProtocol(rest[0])
 		if err != nil {
 			return Query{}, err
 		}
-		config.Type = proto
-
 		////get unique parser for differente protocols like arp, tcp...
 		////scans has own self register sturcts for Parser according to Parser interface
 		parser, err := getParser(proto)
@@ -86,4 +85,15 @@ func splitStages(args []string) [][]string {
 	}
 
 	return stages
+}
+
+func ParseProtocol(s string) (domain.Protocol, error) {
+	switch strings.ToLower(s) {
+	case "tcp":
+		return domain.TCP, nil
+	case "arp":
+		return domain.ARP, nil
+	default:
+		return "", fmt.Errorf("unknown protocol: %s", s)
+	}
 }
