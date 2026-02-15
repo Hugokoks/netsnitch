@@ -1,6 +1,11 @@
 package input
 
-import "strings"
+import (
+	"fmt"
+	"netsnitch/internal/domain"
+	"strings"
+	"time"
+)
 
 type Flags map[string]string
 
@@ -38,4 +43,28 @@ func ExtractFlags(tokens []string) (Flags, []string, error) {
 	}
 
 	return flags, rest, nil
+}
+
+func applyGlobalFlags(cfg *domain.Config, flags Flags) error {
+	// Timeout
+	if t, ok := flags["t"]; ok {
+		d, err := time.ParseDuration(t)
+		if err != nil {
+			return fmt.Errorf("wrong time expression %s", t)
+		}
+		cfg.Timeout = d
+	}
+
+	//render rows/json
+	if r, ok := flags["render"]; ok {
+
+		r, err := domain.ParseRenderType(r)
+		if err != nil {
+			return fmt.Errorf("wrong render expression %s", r)
+		}
+
+	}
+
+	return nil
+
 }

@@ -16,7 +16,8 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 		&Task{
 			timeout: cfg.Timeout,
 			scope:   cfg.Scope,
-			Mode:    cfg.Mode,
+			mode:    cfg.Mode,
+			render:  cfg.Render,
 		},
 	}
 }

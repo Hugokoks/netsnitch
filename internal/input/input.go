@@ -21,32 +21,43 @@ func Parse(args []string) (Query, error) {
 	var configs []domain.Config
 
 	for _, tokens := range rawStages {
-		if len(tokens) == 0 {
-			return Query{}, fmt.Errorf("empty stage")
+
+		flags, rest, err := ExtractFlags(tokens)
+
+		if err != nil {
+			return Query{}, err
 		}
 
+		if len(rest) == 0 {
+			return Query{}, fmt.Errorf("missing protocol")
+		}
+
+		////Create config object
+		config := domain.NewDefaultConfig()
+
 		// first token = protocol (arp / tcp / ...)
-		proto, err := ParseProtocol(tokens[0])
+		proto, err := ParseProtocol(rest[0])
 		if err != nil {
 			return Query{}, err
 		}
 		////get unique parser for differente protocols like arp, tcp...
 		////scans has own self register sturcts for Parser according to Parser interface
 		parser, err := getParser(proto)
+
 		if err != nil {
 			return Query{}, err
 		}
-		////then use this parser to parse tokens
-		////According to the protocol input blueprint
-		////Parse method will return input.Stage struct with data
-		config, err := parser.Parse(tokens)
-		if err != nil {
+
+		if err := parser.Parse(&config, rest, flags); err != nil {
+			return Query{}, err
+		}
+
+		if err = applyGlobalFlags(&config, flags); err != nil {
 			return Query{}, err
 		}
 
 		////Set defualt values of empty parameters
 		parser.ApplyDefaults(&config)
-
 		configs = append(configs, config)
 	}
 

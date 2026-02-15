@@ -11,7 +11,8 @@ import (
 type Task struct {
 	timeout time.Duration
 	scope   domain.Scope
-	Mode    domain.ScanMode
+	mode    domain.ScanMode
+	render  domain.RenderType
 }
 
 func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
@@ -23,7 +24,7 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 
 	arp := discovery.NewARP(t.timeout)
 
-	res, err := arp.Discover(ctx, ips, t.Mode)
+	res, err := arp.Discover(ctx, ips, t.mode)
 	if err != nil {
 		return err
 	}

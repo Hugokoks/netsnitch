@@ -2,7 +2,7 @@ package domain
 
 type Protocol string
 type ScanMode string
-type OutputType string
+type RenderType string
 
 const (
 	TCP  Protocol = "tcp"
@@ -15,6 +15,6 @@ const (
 	ARP_ACTIVE  ScanMode = "active"
 	ARP_PASSIVE ScanMode = "passive"
 
-	ROWS_OUT OutputType = "rows"
-	JSON_OUT OutputType = "json"
+	ROWS_OUT RenderType = "rows"
+	JSON_OUT RenderType = "json"
 )

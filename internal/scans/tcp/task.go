@@ -12,6 +12,7 @@ type Task struct {
 	ip      net.IP
 	port    int
 	mode    domain.ScanMode
+	render  domain.RenderType
 	mgr     *StealthManager
 }
 
@@ -27,6 +28,7 @@ func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
 	case domain.FULL:
 		res = fullScan(ctx, t.ip, t.port, t.timeout)
 	}
+	res.RenderType = t.render
 
 	select {
 	case <-ctx.Done():

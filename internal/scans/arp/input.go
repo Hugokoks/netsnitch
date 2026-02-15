@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"netsnitch/internal/domain"
 	"netsnitch/internal/input"
-	"time"
 )
 
 type Parser struct{}
@@ -15,42 +14,22 @@ func (Parser) Protocol() domain.Protocol {
 
 }
 
-func (Parser) Parse(tokens []string) (domain.Config, error) {
+func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error {
 
-	if len(tokens) < 2 {
-		return domain.Config{}, fmt.Errorf("usage: arp <cidr>")
-	}
-
-	flags, rest, err := input.ExtractFlags(tokens[1:])
-
-	if err != nil {
-		return domain.Config{}, err
-	}
-
-	if len(rest) != 1 {
-		return domain.Config{}, fmt.Errorf("exactly one target scope required")
+	if len(rest) < 2 {
+		return fmt.Errorf("usage: arp <cidr>")
 	}
 
 	//// ---- scope ----
-	scope, err := domain.ParseScope(rest[0])
+	scope, err := domain.ParseScope(rest[1])
 	if err != nil {
-		return domain.Config{}, err
+		return err
 	}
 
-	// ----timeout-----
-	var timeout time.Duration
+	// ----apply settings ----
+	cfg.Scope = scope
 
-	if t, ok := flags["t"]; ok {
-		if d, err := time.ParseDuration(t); err == nil {
-			timeout = d
-		}
-	}
-
-	return domain.Config{
-		Type:    domain.ARP,
-		Scope:   scope,
-		Timeout: timeout,
-	}, nil
+	return nil
 }
 func (Parser) ApplyDefaults(cfg *domain.Config) {
 

@@ -6,11 +6,11 @@ import (
 )
 
 type Result struct {
-	IP       net.IP
-	MAC      net.HardwareAddr
-	Port     int
-	Protocol Protocol
-	OutputType
+	IP         net.IP
+	MAC        net.HardwareAddr
+	Port       int
+	Protocol   Protocol
+	RenderType RenderType
 
 	Open  bool
 	Alive bool

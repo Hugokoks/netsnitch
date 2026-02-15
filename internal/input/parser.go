@@ -7,7 +7,7 @@ import (
 
 type Parser interface {
 	Protocol() domain.Protocol
-	Parse(tokens []string) (domain.Config, error)
+	Parse(cfg *domain.Config, rest []string, flags Flags) error
 	ApplyDefaults(cfg *domain.Config)
 }
 

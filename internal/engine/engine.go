@@ -3,6 +3,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"netsnitch/internal/domain"
 	"netsnitch/internal/output"
 	"netsnitch/internal/tasks"
 )
@@ -10,12 +11,15 @@ import (
 func Run(ctx context.Context, ts []tasks.Task, concurrency int) error {
 	fmt.Println("[engine] starting scan")
 
-	scheduler := NewScheduler(ctx, concurrency)
+	results := make(chan domain.Result, 100)
 
-	go output.ConsumeResults(ctx, scheduler.results)
+	scheduler := NewScheduler(ctx, concurrency, results)
+	consumer := output.NewConsumer(ctx, results)
 
+	go consumer.Start()
 	scheduler.Run(ts)
 
+	consumer.Wait()
 	fmt.Println("[engine] scan finished")
 	return nil
 }

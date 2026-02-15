@@ -43,6 +43,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 				port:    port,
 				timeout: cfg.Timeout,
 				mode:    cfg.Mode,
+				render:  cfg.Render,
 				mgr:     mgr,
 			})
 		}

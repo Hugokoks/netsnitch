@@ -22,3 +22,19 @@ func ParseScanMode(s string) (ScanMode, error) {
 		return "", fmt.Errorf("invalid scan mode: %s", s)
 	}
 }
+
+func ParseRenderType(s string) (RenderType, error) {
+
+	switch s {
+
+	case string(JSON_OUT):
+		return JSON_OUT, nil
+
+	case string(ROWS_OUT):
+		return ROWS_OUT, nil
+	default:
+		return "", fmt.Errorf("invalid render type %s", s)
+
+	}
+
+}

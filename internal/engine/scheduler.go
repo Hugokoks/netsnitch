@@ -18,12 +18,12 @@ type Scheduler struct {
 	wg sync.WaitGroup
 }
 
-func NewScheduler(ctx context.Context, concurrency int) *Scheduler {
+func NewScheduler(ctx context.Context, concurrency int, results chan domain.Result) *Scheduler {
 	return &Scheduler{
 		ctx:         ctx,
 		concurrency: concurrency,
 		tasks:       make(chan tasks.Task),
-		results:     make(chan domain.Result, 100),
+		results:     results,
 	}
 }
 
