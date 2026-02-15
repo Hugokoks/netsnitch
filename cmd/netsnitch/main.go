@@ -20,6 +20,7 @@ func main() {
 		os.Interrupt,
 		syscall.SIGTERM,
 	)
+
 	defer stop()
 
 	if len(os.Args) < 2 {

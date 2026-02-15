@@ -6,6 +6,7 @@ import (
 
 func (a *ARPDiscoverer) collect() {
 	defer a.wg.Done()
+
 	for reply := range a.replyChan {
 		a.mu.Lock()
 		if _, exists := a.alive[reply.IP.String()]; !exists {

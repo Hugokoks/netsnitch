@@ -47,5 +47,3 @@ func (h *ARPHandle) Close() error {
 	h.handle.Close()
 	return nil
 }
-
-////CF259A

@@ -7,15 +7,16 @@ import (
 
 type Result struct {
 	IP       net.IP
-	MAC net.HardwareAddr
+	MAC      net.HardwareAddr
 	Port     int
 	Protocol Protocol
+	OutputType
 
-	Open     bool    
-	Alive   bool     
-	RTT      time.Duration
+	Open  bool
+	Alive bool
+	RTT   time.Duration
 
-	Banner   string
-	Service  string
-	Error    error
+	Banner  string
+	Service string
+	Error   error
 }

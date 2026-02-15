@@ -17,8 +17,10 @@ func ConsumeResults(ctx context.Context, results <-chan domain.Result) {
 			}
 
 			if f, ok := formatters[res.Protocol]; ok {
+
 				f.Format(res)
 			}
+
 		}
 	}
 }
