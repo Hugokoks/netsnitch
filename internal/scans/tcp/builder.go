@@ -2,6 +2,7 @@ package tcp
 
 import (
 	"netsnitch/internal/domain"
+	"netsnitch/internal/scans/tcp/tcp_stealth"
 	"netsnitch/internal/tasks"
 )
 
@@ -25,11 +26,11 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 
 	}
 
-	var mgr *StealthManager
+	var mgr *tcp_stealth.Manager
 
 	////Open network socket only onc
 	if cfg.Mode == domain.STEALTH {
-		mgr, err = NewStealthManager()
+		mgr, err = tcp_stealth.NewManager()
 		if err != nil {
 			panic(err)
 		}

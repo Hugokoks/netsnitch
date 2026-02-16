@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"netsnitch/internal/domain"
+	"netsnitch/internal/scans/tcp/tcp_stealth"
 	"time"
 )
 
@@ -13,7 +14,7 @@ type Task struct {
 	port     int
 	mode     domain.ScanMode
 	render   domain.RenderType
-	mgr      *StealthManager
+	mgr      *tcp_stealth.Manager
 	openOnly bool
 }
 
