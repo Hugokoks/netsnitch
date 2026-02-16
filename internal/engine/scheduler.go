@@ -9,8 +9,8 @@ import (
 )
 
 type Scheduler struct {
-	ctx         context.Context
-	concurrency int
+	ctx                  context.Context
+	concurrencyThreshold int
 
 	tasks   chan tasks.Task
 	results chan domain.Result
@@ -18,18 +18,27 @@ type Scheduler struct {
 	wg sync.WaitGroup
 }
 
-func NewScheduler(ctx context.Context, concurrency int, results chan domain.Result) *Scheduler {
+func NewScheduler(ctx context.Context, results chan domain.Result, treshhold int) *Scheduler {
+
 	return &Scheduler{
-		ctx:         ctx,
-		concurrency: concurrency,
-		tasks:       make(chan tasks.Task),
-		results:     results,
+		ctx:                  ctx,
+		concurrencyThreshold: treshhold,
+		tasks:                make(chan tasks.Task),
+		results:              results,
 	}
 }
 
 func (s *Scheduler) Run(ts []tasks.Task) {
 
-	s.createWorkers()
+	numWorkers := s.concurrencyThreshold
+	numTasks := len(ts)
+
+	if numTasks < s.concurrencyThreshold {
+
+		numWorkers = numTasks
+	}
+
+	s.createWorkers(numWorkers)
 
 	go func() {
 		s.assignTasks(ts)
@@ -50,8 +59,8 @@ func (s *Scheduler) assignTasks(ts []tasks.Task) {
 	}
 }
 
-func (s *Scheduler) createWorkers() {
-	for i := 0; i < s.concurrency; i++ {
+func (s *Scheduler) createWorkers(numWorkers int) {
+	for i := 0; i < numWorkers; i++ {
 		s.wg.Add(1)
 		go s.worker()
 	}
