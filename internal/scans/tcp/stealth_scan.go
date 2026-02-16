@@ -186,7 +186,6 @@ func (m *StealthManager) Scan(
 	key := fmt.Sprintf("%s:%d", ip.String(), port)
 
 	respCh := make(chan bool, 1)
-
 	// --- register ---
 	m.mu.Lock()
 	m.pending[key] = respCh

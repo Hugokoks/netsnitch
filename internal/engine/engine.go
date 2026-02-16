@@ -8,7 +8,8 @@ import (
 	"netsnitch/internal/tasks"
 )
 
-func Run(ctx context.Context, ts []tasks.Task, concurrency int) error {
+func Run(ctx context.Context, ts []tasks.Task) error {
+	concurrency := 200
 	fmt.Println("[engine] starting scan")
 
 	results := make(chan domain.Result, 100)
