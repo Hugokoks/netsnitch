@@ -3,7 +3,6 @@ package input
 import (
 	"fmt"
 	"netsnitch/internal/domain"
-	"strings"
 )
 
 type Query struct {
@@ -36,7 +35,7 @@ func Parse(args []string) (Query, error) {
 		config := domain.NewDefaultConfig()
 
 		// first token = protocol (arp / tcp / ...)
-		proto, err := ParseProtocol(rest[0])
+		proto, err := domain.ParseProtocol(rest[0])
 		if err != nil {
 			return Query{}, err
 		}
@@ -85,15 +84,4 @@ func splitStages(args []string) [][]string {
 	}
 
 	return stages
-}
-
-func ParseProtocol(s string) (domain.Protocol, error) {
-	switch strings.ToLower(s) {
-	case "tcp":
-		return domain.TCP, nil
-	case "arp":
-		return domain.ARP, nil
-	default:
-		return "", fmt.Errorf("unknown protocol: %s", s)
-	}
 }
