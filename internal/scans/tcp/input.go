@@ -46,7 +46,6 @@ func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error 
 		cfg.OpenOnly = true
 
 	}
-
 	// ----apply settings ----
 	cfg.Mode = mode
 	cfg.Ports = portScope

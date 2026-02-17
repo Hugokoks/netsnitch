@@ -7,10 +7,12 @@ import (
 )
 
 type Manager struct {
-	fd      socketFD ////file description
-	pending map[string]chan bool
-	mu      sync.Mutex
-	closeCh chan struct{}
+	fd        socketFD ////file description
+	pending   map[string]chan bool
+	mu        sync.Mutex
+	closeCh   chan struct{}
+	wg        sync.WaitGroup
+	startOnce sync.Once
 }
 
 func NewManager() (*Manager, error) {
@@ -31,12 +33,11 @@ func NewManager() (*Manager, error) {
 		pending: make(map[string]chan bool),
 		closeCh: make(chan struct{}),
 	}
-	////Listen for answers
-	go mgr.listen()
 
 	return mgr, nil
 }
 
 func (m *Manager) Close() {
+	close(m.closeCh)
 	syscall.Close(m.fd)
 }

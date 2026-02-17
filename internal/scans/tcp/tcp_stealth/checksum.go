@@ -13,6 +13,7 @@ import (
 // [9]     Protocol (6 for TCP)
 // [10-11] TCP Length (20 bytes for our SYN)
 // [12+]   The actual 20-byte TCP Header from above
+
 func tcpChecksum(srcIP, dstIP net.IP, tcp []byte) uint16 {
 
 	pseudoHeader := make([]byte, 12+len(tcp))
@@ -58,11 +59,10 @@ func checksum(data []byte) uint16 {
 	// added back to the bottom 16 bits.
 	// (sum >> 16) extracts the carry, (sum & 0xFFFF) keeps the bottom 16 bits.
 
-	//[0000000000000001,0000000000000000]
-	//[0000000000000000,0000000000000001]
+	//[00000000 00000001,00000000 00000000]
+	//[00000000 00000000,00000000 00000001]
 	for (sum >> 16) > 0 {
 
-		// Take the lower 16 bits and sum them with the upper 16 bits
 		sum = (sum & 0xFFFF) + (sum >> 16)
 	}
 

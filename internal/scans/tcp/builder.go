@@ -21,37 +21,34 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 
 	ports, err := domain.ResolvePortScope(cfg.Ports)
 	if err != nil {
-
 		panic(err)
-
 	}
 
-	var mgr *tcp_stealth.Manager
-
 	////Open network socket only onc
+	var mgr *tcp_stealth.Manager
 	if cfg.Mode == domain.STEALTH {
 		mgr, err = tcp_stealth.NewManager()
 		if err != nil {
 			panic(err)
 		}
 	}
-	var tasks []tasks.Task
 
+	var taskList []tasks.Task
 	for _, ip := range ips {
 		for _, port := range ports {
-			tasks = append(tasks, &Task{
-				ip:       ip,
-				port:     port,
-				timeout:  cfg.Timeout,
-				mode:     cfg.Mode,
-				render:   cfg.Render,
-				mgr:      mgr,
-				openOnly: cfg.OpenOnly,
-			})
+			base := baseTask{
+				ip: ip, port: port, timeout: cfg.Timeout,
+				render: cfg.Render, openOnly: cfg.OpenOnly,
+			}
+
+			if cfg.Mode == domain.STEALTH {
+				taskList = append(taskList, &StealthTask{baseTask: base, mgr: mgr})
+			} else {
+				taskList = append(taskList, &FullTask{baseTask: base})
+			}
 		}
 	}
-
-	return tasks
+	return taskList
 }
 
 func init() {

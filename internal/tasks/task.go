@@ -8,4 +8,3 @@ import (
 type Task interface {
 	Execute(ctx context.Context, out chan<- domain.Result) error
 }
-

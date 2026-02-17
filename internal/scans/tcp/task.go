@@ -4,42 +4,47 @@ import (
 	"context"
 	"net"
 	"netsnitch/internal/domain"
+	"netsnitch/internal/scans/tcp/tcp_full"
 	"netsnitch/internal/scans/tcp/tcp_stealth"
 	"time"
 )
 
-type Task struct {
-	timeout  time.Duration
+type baseTask struct {
 	ip       net.IP
 	port     int
-	mode     domain.ScanMode
+	timeout  time.Duration
 	render   domain.RenderType
-	mgr      *tcp_stealth.Manager
 	openOnly bool
 }
 
-func (t *Task) Execute(ctx context.Context, out chan<- domain.Result) error {
-
-	/////TODO: Make switch based on scan mode - full, stealth, ...
-
-	var res domain.Result
-	switch t.mode {
-
-	case domain.STEALTH:
-		res = t.mgr.Scan(t.ip, t.port, t.timeout)
-	case domain.FULL:
-		res = fullScan(ctx, t.ip, t.port, t.timeout)
-	}
-
+func (t *baseTask) sendResult(ctx context.Context, res domain.Result, out chan<- domain.Result) error {
 	if t.openOnly && !res.Open {
 		return nil
 	}
 	res.RenderType = t.render
-
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
 	case out <- res:
 		return nil
 	}
+}
+
+type StealthTask struct {
+	baseTask
+	mgr *tcp_stealth.Manager
+}
+
+func (t *StealthTask) Execute(ctx context.Context, out chan<- domain.Result) error {
+	res := t.mgr.Scan(ctx, t.ip, t.port, t.timeout)
+	return t.sendResult(ctx, res, out)
+}
+
+type FullTask struct {
+	baseTask
+}
+
+func (t *FullTask) Execute(ctx context.Context, out chan<- domain.Result) error {
+	res := tcp_full.Scan(ctx, t.ip, t.port, t.timeout)
+	return t.sendResult(ctx, res, out)
 }

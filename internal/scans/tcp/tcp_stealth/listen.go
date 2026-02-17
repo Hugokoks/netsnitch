@@ -17,11 +17,9 @@ func (m *Manager) listen() {
 		if err != nil {
 			continue
 		}
-
 		if n <= 0 {
-			continue
+			m.dispetcher(buf[:n])
 		}
-
-		m.dispetcher(buf[:n])
+		//
 	}
 }

@@ -79,7 +79,6 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, ips []net.IP, arpType doma
 
 	//Send ARP requests
 	fmt.Printf("[ARP] Sending ARP requests to %d targets...\n", len(ips))
-
 	if arpType == domain.ARP_ACTIVE {
 		a.sendARPRequest(scanCtx, handle, ips)
 	}
@@ -87,6 +86,7 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, ips []net.IP, arpType doma
 	//Wait for timeout or cancellation
 	<-scanCtx.Done()
 
+	handle.Close()
 	a.stop()
 
 	return a.results(), nil
@@ -95,6 +95,7 @@ func (a *ARPDiscoverer) Discover(ctx context.Context, ips []net.IP, arpType doma
 func (a *ARPDiscoverer) stop() {
 
 	//Close channel and wait for goroutines
+
 	close(a.replyChan)
 	a.wg.Wait()
 
