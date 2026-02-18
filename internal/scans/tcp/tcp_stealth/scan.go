@@ -3,6 +3,7 @@ package tcp_stealth
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net"
 	"netsnitch/internal/domain"
 	"time"
@@ -35,10 +36,14 @@ func (m *Manager) Scan(
 
 	key := fmt.Sprintf("%s:%d", ip.String(), port)
 	respCh := make(chan bool, 1)
+	seq := rand.Uint32()
 
 	// --- register ---
 	m.mu.Lock()
-	m.pending[key] = respCh
+	m.pending[key] = pendingConn{
+		ch:  respCh,
+		seq: seq,
+	}
 	m.mu.Unlock()
 
 	// clean pending map in end
@@ -56,7 +61,7 @@ func (m *Manager) Scan(
 		Open:     false,
 	}
 	// --- send SYN ---
-	err := m.sendSYN(ip, port)
+	err := m.sendSYN(ip, port, seq)
 	// cannot send tcp req to specific ip and port
 	if err != nil {
 		return result
@@ -69,6 +74,8 @@ func (m *Manager) Scan(
 		return result
 
 	case <-scanCtx.Done():
+		result.Filtred = true
 		return result
+
 	}
 }

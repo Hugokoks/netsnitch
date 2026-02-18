@@ -26,6 +26,11 @@ func parseARPReply(data []byte, ourIP net.IP) (net.IP, net.HardwareAddr, error) 
 		return nil, nil, fmt.Errorf("not an ARP reply")
 	}
 
+	// verify reply is for our IP
+	if !net.IP(arp.DstProtAddress).Equal(ourIP) {
+		return nil, nil, fmt.Errorf("not for us")
+	}
+
 	// Extract sender IP and MAC
 	senderIP := net.IP(arp.SourceProtAddress)
 	senderMAC := net.HardwareAddr(arp.SourceHwAddress)
@@ -34,7 +39,7 @@ func parseARPReply(data []byte, ourIP net.IP) (net.IP, net.HardwareAddr, error) 
 	if senderIP.Equal(ourIP) {
 		return nil, nil, fmt.Errorf("reply from ourselves")
 	}
-	fmt.Println("[ARP] reply from", senderIP, senderMAC)
+	//fmt.Println("[ARP] reply from", senderIP, senderMAC)
 
 	return senderIP, senderMAC, nil
 }

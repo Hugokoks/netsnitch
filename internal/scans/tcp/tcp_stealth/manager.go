@@ -6,9 +6,13 @@ import (
 	"syscall"
 )
 
+type pendingConn struct {
+	ch  chan bool
+	seq uint32
+}
 type Manager struct {
 	fd        socketFD ////file description
-	pending   map[string]chan bool
+	pending   map[string]pendingConn
 	mu        sync.Mutex
 	closeCh   chan struct{}
 	wg        sync.WaitGroup
@@ -30,7 +34,7 @@ func NewManager() (*Manager, error) {
 
 	mgr := &Manager{
 		fd:      fd,
-		pending: make(map[string]chan bool),
+		pending: make(map[string]pendingConn),
 		closeCh: make(chan struct{}),
 	}
 

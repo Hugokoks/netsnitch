@@ -21,6 +21,10 @@ func (f TCPFormatter) FormatRows(res domain.Result) string {
 	if res.Open {
 		status = "OPEN"
 	}
+	if res.Filtred {
+		status = "FILTRED"
+
+	}
 
 	output = fmt.Sprintf(
 		"[%s] %s:%d (%s) [%s]\n",

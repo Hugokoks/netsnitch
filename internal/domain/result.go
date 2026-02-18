@@ -12,9 +12,10 @@ type Result struct {
 	Protocol   Protocol
 	RenderType RenderType
 
-	Open  bool
-	Alive bool
-	RTT   time.Duration
+	Open    bool
+	Alive   bool
+	Filtred bool
+	RTT     time.Duration
 
 	Banner  string
 	Service string

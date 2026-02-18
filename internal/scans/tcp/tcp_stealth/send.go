@@ -30,7 +30,7 @@ import (
 // [18]	Urgent Ptr (High)	0x00	Not used (0)
 // [19]	Urgent Ptr (Low)	0x00	Not used (0)
 
-func (m *Manager) sendSYN(dstIP net.IP, dstPort int) error {
+func (m *Manager) sendSYN(dstIP net.IP, dstPort int, seq uint32) error {
 
 	// Get correct local IP used to reach destination
 	srcIP, err := getLocalIP(dstIP)
@@ -41,13 +41,9 @@ func (m *Manager) sendSYN(dstIP net.IP, dstPort int) error {
 	// waiting for res 40000 - 60000
 	srcPort := uint16(40000 + rand.Intn(20000))
 
-	// res SYN/ACK seq + 1
-	seq := rand.Uint32()
-
 	tcp := make([]byte, 20)
 
 	// Source port
-
 	// Convert uint16 to 2 bytes
 	binary.BigEndian.PutUint16(tcp[0:2], srcPort)
 
