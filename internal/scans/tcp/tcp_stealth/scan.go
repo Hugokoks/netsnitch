@@ -55,7 +55,6 @@ func (m *Manager) Scan(
 		Port:     port,
 		Open:     false,
 	}
-
 	// --- send SYN ---
 	err := m.sendSYN(ip, port)
 	// cannot send tcp req to specific ip and port

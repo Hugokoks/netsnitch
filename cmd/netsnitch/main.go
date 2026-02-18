@@ -48,7 +48,6 @@ func main() {
 	var allTasks []tasks.Task
 
 	for _, cfg := range query.Configs {
-
 		////build task
 		stageTasks := tasks.Build(cfg)
 		allTasks = append(allTasks, stageTasks...)

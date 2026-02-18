@@ -56,6 +56,7 @@ func Parse(args []string) (Query, error) {
 		}
 
 		////Set defualt values of empty parameters
+		config.Type = proto
 		parser.ApplyDefaults(&config)
 		configs = append(configs, config)
 	}
