@@ -22,6 +22,7 @@ func Run(ctx context.Context, ts []tasks.Task) error {
 	results := make(chan domain.Result, 100)
 
 	scheduler := NewScheduler(ctx, results, threshold)
+
 	consumer := output.NewConsumer(ctx, results)
 
 	go consumer.Start()

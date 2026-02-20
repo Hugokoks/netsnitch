@@ -37,7 +37,6 @@ func main() {
 	}
 
 	// Parse input
-
 	query, err := input.Parse(os.Args[1:])
 	if err != nil {
 		fmt.Println("input error:", err)

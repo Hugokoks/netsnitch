@@ -10,6 +10,7 @@ type pendingConn struct {
 	ch  chan bool
 	seq uint32
 }
+
 type Manager struct {
 	fd        socketFD ////file description
 	pending   map[string]pendingConn
