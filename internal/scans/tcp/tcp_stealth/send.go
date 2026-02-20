@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"math/rand"
 	"net"
+	"netsnitch/internal/netutils"
+	"netsnitch/internal/packet"
 	"syscall"
 )
 
@@ -33,7 +35,7 @@ import (
 func (m *Manager) sendSYN(dstIP net.IP, dstPort int, seq uint32) error {
 
 	// Get correct local IP used to reach destination
-	srcIP, err := getLocalIP(dstIP)
+	srcIP, err := netutils.GetLocalIP(dstIP)
 	if err != nil {
 		return err
 	}
@@ -74,7 +76,7 @@ func (m *Manager) sendSYN(dstIP net.IP, dstPort int, seq uint32) error {
 	binary.BigEndian.PutUint16(tcp[18:20], 0)
 
 	// Compute TCP checksum with pseudo-header
-	cs := tcpChecksum(srcIP, dstIP, tcp)
+	cs := packet.TransportChecksum(srcIP, dstIP, tcp, 6)
 	binary.BigEndian.PutUint16(tcp[16:18], cs)
 
 	// Destination sockaddr
@@ -85,16 +87,4 @@ func (m *Manager) sendSYN(dstIP net.IP, dstPort int, seq uint32) error {
 
 	// Send to network
 	return syscall.Sendto(m.fd, tcp, 0, addr)
-}
-
-func getLocalIP(target net.IP) (net.IP, error) {
-	// make fake UDP connection with target to obtain right ip of responsible network card
-	conn, err := net.Dial("udp", target.String()+":80")
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-
-	localAddr := conn.LocalAddr().(*net.UDPAddr)
-	return localAddr.IP, nil
 }

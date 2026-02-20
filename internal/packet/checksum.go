@@ -1,11 +1,11 @@
-package tcp_stealth
+package packet
 
 import (
 	"encoding/binary"
 	"net"
 )
 
-// ---- TCP PSEUDO-HEADER (for Checksum) ----
+// ---- PSEUDO-HEADER (for Checksum) ----
 //
 // [0-3]   Source IP Address
 // [4-7]   Destination IP Address
@@ -14,9 +14,9 @@ import (
 // [10-11] TCP Length (20 bytes for our SYN)
 // [12+]   The actual 20-byte TCP Header from above
 
-func tcpChecksum(srcIP, dstIP net.IP, tcp []byte) uint16 {
+func TransportChecksum(srcIP, dstIP net.IP, payload []byte, protocol uint8) uint16 {
 
-	pseudoHeader := make([]byte, 12+len(tcp))
+	pseudoHeader := make([]byte, 12+len(payload))
 
 	// source IP
 	copy(pseudoHeader[0:4], srcIP.To4())
@@ -28,13 +28,13 @@ func tcpChecksum(srcIP, dstIP net.IP, tcp []byte) uint16 {
 	pseudoHeader[8] = 0
 
 	// protocol (TCP = 6)
-	pseudoHeader[9] = 6
+	pseudoHeader[9] = protocol
 
 	// TCP length
-	binary.BigEndian.PutUint16(pseudoHeader[10:12], uint16(len(tcp)))
+	binary.BigEndian.PutUint16(pseudoHeader[10:12], uint16(len(payload)))
 
 	// TCP header
-	copy(pseudoHeader[12:], tcp)
+	copy(pseudoHeader[12:], payload)
 
 	return checksum(pseudoHeader)
 }
