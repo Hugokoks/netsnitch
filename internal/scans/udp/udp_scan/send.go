@@ -32,7 +32,7 @@ func (m *Manager) sendUDP(dstIP net.IP, dstPort int) error {
 	// Length
 	binary.BigEndian.PutUint16(udp[4:6], uint16(udpLen))
 
-	// Checksum (zatím 0)
+	// Checksum
 	binary.BigEndian.PutUint16(udp[6:8], 0)
 
 	copy(udp[8:], payload)
