@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"netsnitch/internal/domain"
-	"netsnitch/internal/probs"
+	"netsnitch/internal/fingerprint"
 )
 
 func Scan(
@@ -39,12 +39,13 @@ func Scan(
 	defer close(done)
 	go endScan(ctx, done, conn)
 
-	////set max read time
-	_ = conn.SetReadDeadline(time.Now().Add(timeout))
-	banner := ResolveBanner(conn)
-
+	info := fingerprint.Detect(conn, port, timeout)
 	result.Open = true
-	result.Banner = probs.DetectService(banner)
+	if info != nil {
+		result.Service = info.Name
+		result.Banner = info.Raw
+	}
+
 	return result
 }
 
