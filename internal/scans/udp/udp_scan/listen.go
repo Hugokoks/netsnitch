@@ -8,7 +8,6 @@ import (
 func (m *Manager) listen(fd int, dispetcher func(packet []byte)) {
 
 	buf := make([]byte, 65535)
-	fmt.Println("listener start")
 
 	for {
 		select {

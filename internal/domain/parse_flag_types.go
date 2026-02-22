@@ -48,6 +48,8 @@ func ParseProtocol(s string) (Protocol, error) {
 		return TCP, nil
 	case "arp":
 		return ARP, nil
+	case "udp":
+		return UDP, nil
 	default:
 		return "", fmt.Errorf("unknown protocol: %s", s)
 	}

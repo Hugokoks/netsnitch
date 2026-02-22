@@ -42,7 +42,6 @@ func Parse(args []string) (Query, error) {
 		////get unique parser for differente protocols like arp, tcp...
 		////scans has own self register sturcts for Parser according to Parser interface
 		parser, err := getParser(proto)
-
 		if err != nil {
 			return Query{}, err
 		}

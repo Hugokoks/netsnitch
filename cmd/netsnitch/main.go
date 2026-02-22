@@ -12,6 +12,7 @@ import (
 	"netsnitch/internal/input"
 	_ "netsnitch/internal/scans/arp"
 	_ "netsnitch/internal/scans/tcp"
+	_ "netsnitch/internal/scans/udp"
 	"netsnitch/internal/tasks"
 
 	"github.com/joho/godotenv"

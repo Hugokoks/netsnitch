@@ -15,26 +15,23 @@ func (f UDPFormatter) Protocol() domain.Protocol {
 
 func (f UDPFormatter) FormatRows(res domain.Result) string {
 
-	var output string
+	var status string
 
-	status := "CLOSED"
 	if res.Open {
 		status = "OPEN"
+	} else if res.Service == "open|filtered" {
+		status = "OPEN|FILTERED"
+	} else {
+		status = "CLOSED"
 	}
-	if res.Filtred {
-		status = "FILTRED"
 
-	}
-
-	output = fmt.Sprintf(
-		"[%s] %s:%d (%s) [%s]\n",
+	return fmt.Sprintf(
+		"[%s] %s:%d (%s)\n",
 		status,
 		res.IP,
 		res.Port,
 		res.Protocol,
-		res.Service,
 	)
-	return output
 }
 
 func (f UDPFormatter) FormatJson(res domain.Result) string {

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"netsnitch/internal/domain"
 	"time"
 )
 
@@ -13,7 +12,8 @@ func (m *Manager) Scan(
 	ip net.IP,
 	port int,
 	timeout time.Duration,
-) domain.Result {
+	payload []byte,
+) UDPState {
 
 	m.wg.Add(1)
 	defer m.wg.Done()
@@ -34,44 +34,28 @@ func (m *Manager) Scan(
 	key := fmt.Sprintf("%s:%d", ip.String(), port)
 	respChan := make(chan UDPState, 1)
 
-	// register pending
 	m.mu.Lock()
 	m.pending[key] = respChan
 	m.mu.Unlock()
 
-	// cleanup
 	defer func() {
 		m.mu.Lock()
 		delete(m.pending, key)
 		m.mu.Unlock()
 	}()
 
-	result := domain.Result{
-		Protocol: domain.UDP,
-		IP:       ip,
-		Port:     port,
-		Open:     false,
-	}
-
-	// send packet
-	if err := m.sendUDP(ip, port); err != nil {
-		return result
+	if err := m.sendUDP(ip, port, payload); err != nil {
+		return UDPClosed
 	}
 
 	select {
 
 	case state := <-respChan:
-		switch state {
-		case UDPOpen:
-			result.Open = true
-		case UDPClosed:
-			result.Open = false
-		}
-		return result
+
+		return state
 
 	case <-scanCtx.Done():
-		// timeout → OPEN|FILTERED
-		result.Filtred = true
-		return result
+		// UDP timeout = open|filtered (unknown)
+		return UDPOpenOrFiltered
 	}
 }

@@ -11,6 +11,7 @@ type UDPState int
 const (
 	UDPOpen UDPState = iota
 	UDPClosed
+	UDPOpenOrFiltered
 )
 
 type Manager struct {
@@ -45,8 +46,8 @@ func NewManager() (*Manager, error) {
 		return nil, fmt.Errorf("failed to create raw socket: %w", err)
 	}
 
-	syscall.SetNonblock(fdUDP, true)
-	syscall.SetNonblock(fdICMP, true)
+	//syscall.SetNonblock(fdUDP, true)
+	//syscall.SetNonblock(fdICMP, true)
 
 	mgr := &Manager{
 		fdUDP:   fdUDP,

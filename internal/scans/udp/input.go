@@ -32,7 +32,7 @@ func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error 
 
 	}
 
-	// ----OpenOnly---
+	// ----OpenOnly----
 	if _, ok := flags["open"]; ok {
 
 		cfg.OpenOnly = true
