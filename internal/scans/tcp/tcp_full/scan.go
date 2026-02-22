@@ -39,7 +39,9 @@ func Scan(
 	defer close(done)
 	go endScan(ctx, done, conn)
 
-	info := fingerprint.Detect(conn, port, timeout)
+	raw := fingerprint.AcquireTCP(conn, port, timeout)
+	info := fingerprint.Detect(raw)
+
 	result.Open = true
 	if info != nil {
 		result.Service = info.Name

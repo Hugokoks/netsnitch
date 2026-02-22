@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func acquireRaw(conn net.Conn, port int, timeout time.Duration) string {
+func AcquireTCP(conn net.Conn, port int, timeout time.Duration) string {
 
 	raw := grabBanner(conn, timeout)
 

@@ -1,10 +1,5 @@
 package fingerprint
 
-import (
-	"net"
-	"time"
-)
-
 type ServiceInfo struct {
 	Name    string
 	Product string
@@ -12,9 +7,7 @@ type ServiceInfo struct {
 	Raw     string
 }
 
-func Detect(conn net.Conn, port int, timeout time.Duration) *ServiceInfo {
-
-	raw := acquireRaw(conn, port, timeout)
+func Detect(raw string) *ServiceInfo {
 
 	if raw == "" {
 		return &ServiceInfo{Name: "unknown"}
