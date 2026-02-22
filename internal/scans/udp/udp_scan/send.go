@@ -18,7 +18,7 @@ func (m *Manager) sendUDP(dstIP net.IP, dstPort int) error {
 
 	srcPort := uint16(40000 + rand.Intn(20000))
 
-	payload := []byte{} // můžeš přidat DNS probe později
+	payload := []byte{}
 
 	udpLen := 8 + len(payload)
 	udp := make([]byte, udpLen)

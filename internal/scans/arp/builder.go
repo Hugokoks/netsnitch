@@ -11,7 +11,7 @@ func (b Builder) Protocol() domain.Protocol {
 	return domain.ARP
 }
 
-func (b Builder) Build(cfg domain.Config) []tasks.Task {
+func (b Builder) Build(cfg domain.Config) ([]tasks.Task, error) {
 	return []tasks.Task{
 		&Task{
 			timeout: cfg.Timeout,
@@ -19,7 +19,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 			mode:    cfg.Mode,
 			render:  cfg.Render,
 		},
-	}
+	}, nil
 }
 
 func init() {

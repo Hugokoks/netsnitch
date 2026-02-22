@@ -9,8 +9,7 @@ import (
 type UDPState int
 
 const (
-	UDPUknown UDPState = iota
-	UDPOpen
+	UDPOpen UDPState = iota
 	UDPClosed
 )
 
@@ -24,7 +23,7 @@ type Manager struct {
 	startOnce sync.Once
 }
 
-func newManager() (*Manager, error) {
+func NewManager() (*Manager, error) {
 
 	fdUDP, err := syscall.Socket(
 		syscall.AF_INET,     // IPV4
@@ -38,7 +37,7 @@ func newManager() (*Manager, error) {
 
 	fdICMP, err := syscall.Socket(
 		syscall.AF_INET,      // IPV4
-		syscall.SOCK_RAW,     // RAW SOCKET
+		syscall.SOCK_RAW,     // RAW SCKET
 		syscall.IPPROTO_ICMP, // ICMP Protocol
 	)
 

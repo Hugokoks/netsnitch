@@ -1,6 +1,7 @@
 package tcp
 
 import (
+	"fmt"
 	"netsnitch/internal/domain"
 	"netsnitch/internal/scans/tcp/tcp_stealth"
 	"netsnitch/internal/tasks"
@@ -12,16 +13,16 @@ func (b Builder) Protocol() domain.Protocol {
 	return domain.TCP
 }
 
-func (b Builder) Build(cfg domain.Config) []tasks.Task {
+func (b Builder) Build(cfg domain.Config) ([]tasks.Task, error) {
 
 	ips, err := domain.ResolveScope(cfg.Scope)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("TCP builder Resolve scope error %w", err)
 	}
 
 	ports, err := domain.ResolvePortScope(cfg.Ports)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("TCP builder Resolve scope error %w", err)
 	}
 
 	////Open network socket only onc
@@ -29,7 +30,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 	if cfg.Mode == domain.STEALTH {
 		mgr, err = tcp_stealth.NewManager()
 		if err != nil {
-			panic(err)
+			return nil, fmt.Errorf("TCP builder create manager error %w", err)
 		}
 	}
 
@@ -47,7 +48,7 @@ func (b Builder) Build(cfg domain.Config) []tasks.Task {
 			}
 		}
 	}
-	return taskList
+	return taskList, nil
 }
 
 func init() {

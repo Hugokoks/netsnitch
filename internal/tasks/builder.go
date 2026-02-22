@@ -6,7 +6,7 @@ import (
 
 type Builder interface {
 	Protocol() domain.Protocol
-	Build(cfg domain.Config) []Task
+	Build(cfg domain.Config) ([]Task, error)
 }
 
 var builders = map[domain.Protocol]Builder{}
@@ -15,7 +15,7 @@ func Register(b Builder) {
 	builders[b.Protocol()] = b
 }
 
-func Build(cfg domain.Config) []Task {
+func Build(cfg domain.Config) ([]Task, error) {
 	if b, ok := builders[cfg.Type]; ok {
 		return b.Build(cfg)
 	}

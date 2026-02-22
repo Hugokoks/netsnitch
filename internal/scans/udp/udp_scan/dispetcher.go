@@ -13,7 +13,6 @@ func (m *Manager) handleUDP(packet []byte) {
 		return
 	}
 
-	// IP source je vždy na 12–15
 	srcIP := net.IP(packet[12:16])
 	srcPort := int(binary.BigEndian.Uint16(payload[0:2]))
 

@@ -48,7 +48,11 @@ func main() {
 
 	for _, cfg := range query.Configs {
 		////build task
-		stageTasks := tasks.Build(cfg)
+		stageTasks, err := tasks.Build(cfg)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		allTasks = append(allTasks, stageTasks...)
 	}
 	// Engine
