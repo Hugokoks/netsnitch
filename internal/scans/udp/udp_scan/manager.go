@@ -2,6 +2,7 @@ package udp_scan
 
 import (
 	"fmt"
+	"netsnitch/internal/netutils"
 	"sync"
 	"syscall"
 )
@@ -15,8 +16,8 @@ const (
 )
 
 type Manager struct {
-	fdUDP     int
-	fdICMP    int
+	fdUDP     netutils.SocketFD
+	fdICMP    netutils.SocketFD
 	mu        sync.Mutex
 	closeCh   chan struct{}
 	pending   map[string]chan UDPState
@@ -37,9 +38,9 @@ func NewManager() (*Manager, error) {
 	}
 
 	fdICMP, err := syscall.Socket(
-		syscall.AF_INET,      // IPV4
-		syscall.SOCK_RAW,     // RAW SCKET
-		syscall.IPPROTO_ICMP, // ICMP Protocol
+		syscall.AF_INET,    // IPV4
+		syscall.SOCK_RAW,   // RAW SCKET
+		netutils.ProtoICMP, // ICMP Protocol
 	)
 
 	if err != nil {

@@ -2,6 +2,7 @@ package tcp_stealth
 
 import (
 	"fmt"
+	"netsnitch/internal/netutils"
 	"sync"
 	"syscall"
 )
@@ -12,7 +13,7 @@ type pendingConn struct {
 }
 
 type Manager struct {
-	fd        socketFD ////file description
+	fd        netutils.SocketFD ////file description
 	pending   map[string]pendingConn
 	mu        sync.Mutex
 	closeCh   chan struct{}
