@@ -2,10 +2,11 @@ package udp_scan
 
 import (
 	"fmt"
+	"netsnitch/internal/netutils"
 	"syscall"
 )
 
-func (m *Manager) listen(fd int, dispetcher func(packet []byte)) {
+func (m *Manager) listen(fd netutils.SocketFD, dispetcher func(packet []byte)) {
 
 	buf := make([]byte, 65535)
 

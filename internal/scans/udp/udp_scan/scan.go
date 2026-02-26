@@ -21,7 +21,6 @@ func (m *Manager) Scan(
 	m.startOnce.Do(func() {
 		go m.listen(m.fdUDP, m.handleUDP)
 		go m.listen(m.fdICMP, m.handleICMP)
-
 		go func() {
 			m.wg.Wait()
 			m.Close()
