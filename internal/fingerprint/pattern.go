@@ -61,4 +61,35 @@ var registry = []Pattern{
 			}
 		},
 	},
+	{
+		Service: "mysql",
+		Regex:   regexp.MustCompile(`(?i)[\x00-\xff]{3,5}([58]\.[0-9]+\.[0-9]+[^\x00-\x1f]+)`),
+		Parser: func(matches []string) *ServiceInfo {
+			return &ServiceInfo{
+				Name:    "mysql",
+				Product: "MySQL",
+				Version: matches[1],
+			}
+		},
+	},
+	{
+		Service: "redis",
+		Regex:   regexp.MustCompile(`(?i)-ERR unknown command|PONG`),
+		Parser: func(matches []string) *ServiceInfo {
+			return &ServiceInfo{
+				Name:    "redis",
+				Product: "Redis",
+			}
+		},
+	},
+	{
+		Service: "postgresql",
+		Regex:   regexp.MustCompile(`(?i)PostgreSQL`),
+		Parser: func(matches []string) *ServiceInfo {
+			return &ServiceInfo{
+				Name:    "postgresql",
+				Product: "PostgreSQL",
+			}
+		},
+	},
 }
