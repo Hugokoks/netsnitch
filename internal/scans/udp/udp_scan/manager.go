@@ -65,5 +65,4 @@ func (m *Manager) Close() {
 	close(m.closeCh)
 	syscall.Close(m.fdICMP)
 	syscall.Close(m.fdUDP)
-
 }

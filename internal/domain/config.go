@@ -26,4 +26,4 @@ func NewDefaultConfig() Config {
 }
 
 var DefaultPorts = []int{22, 80, 443}
-var DefaultTimeout = 400 * time.Millisecond
+var DefaultTimeout = 2 * time.Second

@@ -1,0 +1,144 @@
+[
+    {
+        "name": "NullProbe",
+        "payload": "",
+        "ports": [
+            21,
+            22,
+            23,
+            25,
+            110,
+            143,
+            419,
+            587
+        ],
+        "priority": 1
+    },
+    {
+        "name": "HTTP_Get",
+        "payload": "R0VUIC8gSFRUUC8xLjBcclxuXHJcbg==",
+        "ports": [
+            80,
+            443,
+            8000,
+            8008,
+            8080,
+            8180,
+            8888
+        ],
+        "priority": 1
+    },
+    {
+        "name": "Generic_Line",
+        "payload": "XHJcblxyXG4=",
+        "ports": [],
+        "priority": 3
+    },
+    {
+        "name": "TLS_Hello",
+        "payload": "FgsBAABhAQAAAABXAwEBADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAw",
+        "ports": [
+            443,
+            465,
+            587,
+            993,
+            995,
+            3389,
+            5432,
+            6379,
+            8443
+        ],
+        "priority": 1
+    },
+    {
+        "name": "MySQL_Init",
+        "payload": "BwAAAAADc2VsZWN0IDE=",
+        "ports": [
+            3306
+        ],
+        "priority": 1
+    },
+    {
+        "name": "Postgres_Init",
+        "payload": "AAAACATSFicv",
+        "ports": [
+            5432
+        ],
+        "priority": 1
+    },
+    {
+        "name": "Redis_Ping",
+        "payload": "UElOR1xyXG4=",
+        "ports": [
+            6379
+        ],
+        "priority": 1
+    },
+    {
+        "name": "Memcached_Stats",
+        "payload": "c3RhdHNcclxu",
+        "ports": [
+            11211
+        ],
+        "priority": 1
+    },
+    {
+        "name": "SMB_Neg",
+        "payload": "AAABAF9TTUJyAAAAAAAAAA==",
+        "ports": [
+            445
+        ],
+        "priority": 1
+    },
+    {
+        "name": "RDP_Cookie",
+        "payload": "Q29va2llOiBtc3RzaGFzaD1ubWFwXHJcbg==",
+        "ports": [
+            3389
+        ],
+        "priority": 1
+    },
+    {
+        "name": "SIP_Options",
+        "payload": "T1BUSU9OUyBzaXA6bm0gU0lQLzIuMFxyXG5cclxu",
+        "ports": [
+            5060
+        ],
+        "priority": 1
+    },
+    {
+        "name": "Help_Cmd",
+        "payload": "SEVMUFxyXG4=",
+        "ports": [
+            21,
+            25,
+            110
+        ],
+        "priority": 2
+    },
+    {
+        "name": "VNC_Spec",
+        "payload": "UkZCIDAwMy4wMDgK",
+        "ports": [
+            5900,
+            5901
+        ],
+        "priority": 1
+    },
+    {
+        "name": "MongoDB_IsMaster",
+        "payload": "OwAAAGlzTWFzdGVyOjE=",
+        "ports": [
+            27017
+        ],
+        "priority": 1
+    },
+    {
+        "name": "DNS_Status",
+        "payload": "AAABAAAAAAAAAAAA",
+        "ports": [
+            53
+        ],
+        "priority": 1
+    }
+]

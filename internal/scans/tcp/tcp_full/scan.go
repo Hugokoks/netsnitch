@@ -4,25 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"time"
-
 	"netsnitch/internal/domain"
 	"netsnitch/internal/fingerprint"
+	"time"
 )
 
-func Scan(
-	ctx context.Context,
-	ip net.IP,
-	port int,
-	timeout time.Duration,
-) domain.Result {
-
-	address := fmt.Sprintf("%s:%d", ip, port)
-
-	///establish a connection to the port
-	d := net.Dialer{Timeout: timeout}
-	conn, err := d.DialContext(ctx, "tcp", address)
-
+func Scan(ctx context.Context, ip net.IP, port int, timeout time.Duration) domain.Result {
 	result := domain.Result{
 		Protocol: domain.TCP,
 		IP:       ip,
@@ -30,36 +17,26 @@ func Scan(
 		Open:     false,
 	}
 
+	// 1. Check if the port is open using a standard Dial
+	d := net.Dialer{Timeout: timeout}
+	conn, err := d.DialContext(ctx, "tcp", fmt.Sprintf("%s:%d", ip, port))
 	if err != nil {
-		return result
+		return result // Connection failed, port is likely closed or filtered
 	}
-	done := make(chan struct{})
 
-	defer conn.Close()
-	defer close(done)
-	go endScan(ctx, done, conn)
-
-	raw := fingerprint.AcquireTCP(conn, port, timeout)
-	info := fingerprint.Detect(raw)
-
+	// 2. Port is confirmed OPEN
 	result.Open = true
+
+	// 3. Delegate the complex service identification to the fingerprint engine.
+	// We pass the initial 'conn' for the NullProbe phase.
+	info := fingerprint.Identify(ctx, conn, ip, port, timeout)
+
 	if info != nil {
 		result.Service = info.Name
 		result.Banner = info.Raw
+	} else {
+		result.Service = "unknown"
 	}
 
 	return result
-}
-
-func endScan(ctx context.Context, done <-chan struct{}, conn net.Conn) {
-
-	for {
-		select {
-		case <-ctx.Done():
-			conn.Close()
-			return
-		case <-done:
-			return
-		}
-	}
 }
