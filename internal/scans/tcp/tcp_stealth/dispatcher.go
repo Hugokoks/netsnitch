@@ -28,6 +28,7 @@ func (m *Manager) dispetcher(packet []byte) {
 
 	key := fmt.Sprintf("%s:%d", srcIP.String(), srcPort)
 	ack := binary.BigEndian.Uint32(tcp[8:12])
+	
 
 	m.mu.Lock()
 	conn, ok := m.pending[key]
@@ -40,7 +41,7 @@ func (m *Manager) dispetcher(packet []byte) {
 	if ack != conn.seq+1 {
 		return
 	}
-
+	
 	if flags&0x12 == 0x12 { // 18 SYN+ACK
 		conn.ch <- true
 	} else if flags&0x04 == 0x04 { // 4 RST
