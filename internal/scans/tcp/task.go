@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"netsnitch/internal/domain"
+	"netsnitch/internal/fingerprint"
 	"netsnitch/internal/scans/tcp/tcp_full"
 	"netsnitch/internal/scans/tcp/tcp_stealth"
 	"time"
@@ -15,6 +16,8 @@ type baseTask struct {
 	timeout  time.Duration
 	render   domain.RenderType
 	openOnly bool
+
+	fp *fingerprint.Engine
 }
 
 func (t *baseTask) sendResult(ctx context.Context, res domain.Result, out chan<- domain.Result) error {
@@ -45,6 +48,6 @@ type FullTask struct {
 }
 
 func (t *FullTask) Execute(ctx context.Context, out chan<- domain.Result) error {
-	res := tcp_full.Scan(ctx, t.ip, t.port, t.timeout)
+	res := tcp_full.Scan(ctx, t.fp, t.ip, t.port, t.timeout)
 	return t.sendResult(ctx, res, out)
 }

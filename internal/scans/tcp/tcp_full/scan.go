@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Scan(ctx context.Context, ip net.IP, port int, timeout time.Duration) domain.Result {
+func Scan(ctx context.Context, fp *fingerprint.Engine, ip net.IP, port int, timeout time.Duration) domain.Result {
 	result := domain.Result{
 		Protocol: domain.TCP,
 		IP:       ip,
@@ -29,7 +29,15 @@ func Scan(ctx context.Context, ip net.IP, port int, timeout time.Duration) domai
 
 	// 3. Delegate the complex service identification to the fingerprint engine.
 	// We pass the initial 'conn' for the NullProbe phase.
-	info := fingerprint.Identify(ctx, conn, ip, port, timeout)
+
+	info := fingerprint.Identify(
+		ctx,
+		fp,
+		conn,
+		ip,
+		port,
+		timeout,
+	)
 
 	if info != nil {
 		result.Service = info.Name

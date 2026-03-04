@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"netsnitch/internal/fingerprint"
 	"time"
 )
 
@@ -8,12 +9,13 @@ type Config struct {
 	Type    Protocol
 	Timeout time.Duration
 
-	Scope      Scope
-	Render     RenderType
-	Ports      PortScope
-	Mode       ScanMode
-	OpenOnly   bool
-	UDPPayload string
+	Scope       Scope
+	Render      RenderType
+	Ports       PortScope
+	Mode        ScanMode
+	OpenOnly    bool
+	UDPPayload  string
+	Fingerprint *fingerprint.Engine
 }
 
 func NewDefaultConfig() Config {

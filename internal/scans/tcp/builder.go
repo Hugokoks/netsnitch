@@ -40,6 +40,7 @@ func (b Builder) Build(cfg domain.Config) ([]tasks.Task, error) {
 			base := baseTask{
 				ip: ip, port: port, timeout: cfg.Timeout,
 				render: cfg.Render, openOnly: cfg.OpenOnly,
+				fp: cfg.Fingerprint,
 			}
 			if cfg.Mode == domain.STEALTH {
 				taskList = append(taskList, &StealthTask{baseTask: base, mgr: mgr})

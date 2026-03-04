@@ -6,9 +6,11 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"netsnitch/internal/engine"
+	"netsnitch/internal/fingerprint"
 	"netsnitch/internal/input"
 	_ "netsnitch/internal/scans/arp"
 	_ "netsnitch/internal/scans/tcp"
@@ -37,6 +39,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	// init fingerprint engine
+	fpEngine := fingerprint.NewEngine()
+	fingerprint.LoadProbes("data/probes.json")
+	files, _ := filepath.Glob("data/fingerprints/*.xml")
+
+	for _, f := range files {
+		fpEngine.LoadRecogFile(f)
+	}
+
 	// Parse input
 	query, err := input.Parse(os.Args[1:])
 	if err != nil {
@@ -48,6 +59,9 @@ func main() {
 	var allTasks []tasks.Task
 
 	for _, cfg := range query.Configs {
+		////load fingerprint engine into cfg
+		cfg.Fingerprint = fpEngine
+
 		////build task
 		stageTasks, err := tasks.Build(cfg)
 		if err != nil {

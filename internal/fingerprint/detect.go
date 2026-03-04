@@ -1,50 +1,64 @@
 package fingerprint
 
-import "strings"
+func (e *Engine) Detect(raw string) *ServiceInfo {
 
-// Detect runs the raw string through all loaded fingerprint patterns
-func Detect(raw string) *ServiceInfo {
 	if raw == "" {
 		return nil
 	}
 
-	// Basic cleanup
-	cleanRaw := strings.TrimSpace(raw)
-	// Remove null bytes and other non-printable garbage common in banners
-	cleanRaw = strings.Map(func(r rune) rune {
-		if r < 32 || r > 126 {
-			return -1
-		}
-		return r
-	}, cleanRaw)
-
-	if len(cleanRaw) < 2 {
-		return nil
+	if cached := e.getCached(raw); cached != nil {
+		return cached
 	}
 
-	// Loop through our "brain"
-	for _, p := range fingerprints {
-		matches := p.Regex.FindStringSubmatch(cleanRaw)
+	proto := guessProtocol(raw)
+
+	var candidates []Pattern
+
+	if proto != "" {
+		candidates = e.byProtocol[proto]
+	} else {
+		candidates = e.generic
+	}
+
+	for _, p := range candidates {
+
+		matches := p.Regex.FindStringSubmatch(raw)
+
 		if matches == nil {
 			continue
 		}
 
 		info := &ServiceInfo{
 			Name: p.Service,
-			Raw:  cleanRaw,
+			Raw:  raw,
 		}
 
-		// If the regex has a capture group (e.g. ^SSH-(.+)), we take it as version
-		if len(matches) > 1 {
-			info.Version = matches[1]
+		for _, param := range p.Params {
+
+			if param.Pos >= len(matches) {
+				continue
+			}
+
+			switch param.Name {
+
+			case "service.version":
+
+				info.Version = matches[param.Pos]
+
+			case "service.product":
+
+				info.Product = matches[param.Pos]
+
+			case "service.vendor":
+
+				info.Vendor = matches[param.Pos]
+			}
 		}
+
+		e.storeCache(raw, info)
 
 		return info
 	}
 
-	// If we got some data but no regex matched
-	return &ServiceInfo{
-		Name: "unknown",
-		Raw:  cleanRaw,
-	}
+	return nil
 }
