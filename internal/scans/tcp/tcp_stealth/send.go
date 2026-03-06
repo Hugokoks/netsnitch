@@ -9,29 +9,28 @@ import (
 	"syscall"
 )
 
-//	----SYN PACKET ----
-//
-// [0]	Source Port (High)	0x9C	High byte of 40000 (0x9C40)
-// [1]	Source Port (Low)	0x40	Low byte of 40000
-// [2]	Dest Port (High)	0x00	High byte of 80 (0x0050)
-// [3]	Dest Port (Low)	0x50	Low byte of 80
-// [4]	Sequence No (B3)	0xDE	1st byte of random seq (e.g., 0xDEADBEEF)
-// [5]	Sequence No (B2)	0xAD	2nd byte
-// [6]	Sequence No (B1)	0xBE	3rd byte
-// [7]	Sequence No (B0)	0xEF	4th byte
-// [8]	Ack No (B3)	0x00	Always 0 in a SYN packet
-// [9]	Ack No (B2)	0x00
-// [10]	Ack No (B1)	0x00
-// [11]	Ack No (B0)	0x00
-// [12]	Data Offset	0x50	5 << 4 (Header is 20 bytes long)
-// [13]	Flags	0x02	SYN flag enabled
-// [14]	Window Size (High)	0xFF	High byte of 65535 (0xFFFF)
-// [15]	Window Size (Low)	0xFF	Low byte of 65535
-// [16]	Checksum (High)	0x??	Calculated by tcpChecksum function
-// [17]	Checksum (Low)	0x??	Calculated by tcpChecksum function
-// [18]	Urgent Ptr (High)	0x00	Not used (0)
-// [19]	Urgent Ptr (Low)	0x00	Not used (0)
-
+/*	----SYN PACKET ----
+[0]	Source Port (High)	0x9C	High byte of 40000 (0x9C40)
+[1]	Source Port (Low)	0x40	Low byte of 40000
+[2]	Dest Port (High)	0x00	High byte of 80 (0x0050)
+[3]	Dest Port (Low)	0x50	Low byte of 80
+[4]	Sequence No (B3)	0xDE	1st byte of random seq (e.g., 0xDEADBEEF)
+[5]	Sequence No (B2)	0xAD	2nd byte
+[6]	Sequence No (B1)	0xBE	3rd byte
+[7]	Sequence No (B0)	0xEF	4th byte
+[8]	Ack No (B3)	0x00	Always 0 in a SYN packet
+[9]	Ack No (B2)	0x00
+[10]	Ack No (B1)	0x00
+[11]	Ack No (B0)	0x00
+[12]	Data Offset	0x50	5 << 4 (Header is 20 bytes long)
+[13]	Flags	0x02	SYN flag enabled
+[14]	Window Size (High)	0xFF	High byte of 65535 (0xFFFF)
+[15]	Window Size (Low)	0xFF	Low byte of 65535
+[16]	Checksum (High)	0x??	Calculated by tcpChecksum function
+[17]	Checksum (Low)	0x??	Calculated by tcpChecksum function
+[18]	Urgent Ptr (High)	0x00	Not used (0)
+[19]	Urgent Ptr (Low)	0x00	Not used (0)
+*/
 func (m *Manager) sendSYN(dstIP net.IP, dstPort int, seq uint32) error {
 
 	// Get correct local IP used to reach destination
