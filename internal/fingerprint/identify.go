@@ -7,26 +7,26 @@ import (
 	"time"
 )
 
-func Identify(
+func (e *Engine) Identify(
 	ctx context.Context,
-	engine *Engine,
 	firstConn net.Conn,
 	ip net.IP,
 	port int,
 	timeout time.Duration,
 ) *ServiceInfo {
 
+	// Phase 1: passive banner
 	raw := grabWithContext(ctx, firstConn, timeout)
-
-	firstConn.Close()
+	_ = firstConn.Close()
 
 	if raw != "" {
-
-		return engine.Detect(raw)
+		if info := e.Detect(port, raw); info != nil {
+			return info
+		}
 	}
 
-	probes := GetProbesForPort(port)
-
+	// Phase 2: active probes
+	probes := e.getProbes(port)
 	address := fmt.Sprintf("%s:%d", ip, port)
 
 	for _, p := range probes {
@@ -38,77 +38,37 @@ func Identify(
 		}
 
 		d := net.Dialer{Timeout: timeout}
-
 		conn, err := d.DialContext(ctx, "tcp", address)
-
 		if err != nil {
 			continue
 		}
 
-		conn.SetWriteDeadline(time.Now().Add(timeout))
+		_ = conn.SetWriteDeadline(time.Now().Add(timeout))
+		_ = conn.SetReadDeadline(time.Now().Add(timeout))
 
-		_, err = conn.Write(p.RawData)
-
-		if err != nil {
-
-			conn.Close()
-			continue
+		// Send payload if any
+		if len(p.Raw) > 0 {
+			if _, err := conn.Write(p.Raw); err != nil {
+				conn.Close()
+				continue
+			}
 		}
 
-		response := grabWithContext(ctx, conn, timeout)
-
+		resp := grabWithContext(ctx, conn, timeout)
 		conn.Close()
 
-		if response == "" {
+		if resp == "" {
 			continue
 		}
 
-		info := engine.Detect(response)
-
-		if info != nil {
+		if info := e.Detect(port, resp); info != nil {
 			return info
 		}
 	}
 
-	return nil
-}
-
-func grabWithContext(
-	ctx context.Context,
-	conn net.Conn,
-	timeout time.Duration,
-) string {
-
-	buf := make([]byte, 4096)
-
-	conn.SetReadDeadline(time.Now().Add(timeout))
-
-	type readResult struct {
-		n   int
-		err error
+	var info = &ServiceInfo{
+		Service: "unknown",
+		Banner:  raw,
 	}
-
-	resChan := make(chan readResult, 1)
-
-	go func() {
-		n, err := conn.Read(buf)
-		resChan <- readResult{n: n, err: err}
-	}()
-
-	select {
-
-	case <-ctx.Done():
-		// kill blocking read
-		conn.Close()
-
-		return ""
-
-	case res := <-resChan:
-
-		if res.err != nil || res.n == 0 {
-			return ""
-		}
-
-		return string(buf[:res.n])
-	}
+	return info
 }

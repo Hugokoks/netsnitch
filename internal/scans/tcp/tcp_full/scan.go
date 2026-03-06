@@ -30,21 +30,16 @@ func Scan(ctx context.Context, fp *fingerprint.Engine, ip net.IP, port int, time
 	// 3. Delegate the complex service identification to the fingerprint engine.
 	// We pass the initial 'conn' for the NullProbe phase.
 
-	info := fingerprint.Identify(
+	info := fp.Identify(
 		ctx,
-		fp,
 		conn,
 		ip,
 		port,
 		timeout,
 	)
 
-	if info != nil {
-		result.Service = info.Name
-		result.Banner = info.Raw
-	} else {
-		result.Service = "unknown"
-	}
+	result.Service = info.Service
+	result.Banner = info.Banner
 
 	return result
 }

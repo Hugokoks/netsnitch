@@ -1,0 +1,274 @@
+[
+  {
+    "id": "ssh_banner",
+    "service": "ssh",
+    "product": "OpenSSH",
+    "ports": [22],
+    "confidence": 0.99,
+    "when": {
+      "type": "prefix",
+      "pattern": "SSH-"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "^SSH-\\d\\.\\d-OpenSSH_([^\\s]+)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+
+  {
+    "id": "http_status",
+    "service": "http",
+    "ports": [80, 8080, 8000],
+    "confidence": 0.95,
+    "when": {
+      "type": "prefix",
+      "pattern": "HTTP/"
+    }
+  },
+
+  {
+    "id": "http_apache_server",
+    "service": "http",
+    "product": "Apache",
+    "ports": [80, 8080, 8000],
+    "confidence": 0.90,
+    "when": {
+      "type": "contains",
+      "pattern": "server:"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?im)^Server:\\s*Apache/([^\\s\\r\\n]+)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+
+  {
+    "id": "ftp_banner",
+    "service": "ftp",
+    "ports": [21, 2121],
+    "confidence": 0.95,
+    "when": {
+      "type": "prefix",
+      "pattern": "220"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)^220[ -].*(vsftpd|proftpd|filezilla server)?/?([^\\s\\r\\n]*)?"
+    },
+    "extract": {
+      "product": 1,
+      "version": 2
+    }
+  },
+
+  {
+    "id": "smtp_banner",
+    "service": "smtp",
+    "ports": [25, 587, 2525],
+    "confidence": 0.95,
+    "when": {
+      "type": "prefix",
+      "pattern": "220"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)^220[ -].*(ESMTP|SMTP|Postfix|Exim|Sendmail)"
+    },
+    "extract": {
+      "product": 1
+    }
+  },
+
+  {
+    "id": "telnet_iac",
+    "service": "telnet",
+    "ports": [23],
+    "confidence": 0.93,
+    "when": {
+      "type": "hex",
+      "pattern": "fffd"
+    }
+  },
+
+  {
+    "id": "mysql_handshake",
+    "service": "mysql",
+    "ports": [3306],
+    "confidence": 0.96,
+    "when": {
+      "type": "contains",
+      "pattern": "mysql"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)mysql[^\\d]*([0-9]+(?:\\.[0-9]+)+)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+
+  {
+    "id": "rpcbind_banner",
+    "service": "rpcbind",
+    "ports": [111],
+    "confidence": 0.85,
+    "when": {
+      "type": "contains",
+      "pattern": "rpc"
+    }
+  },
+
+  {
+    "id": "distccd_banner",
+    "service": "distccd",
+    "ports": [3632],
+    "confidence": 0.90,
+    "when": {
+      "type": "contains",
+      "pattern": "distccd"
+    }
+  },
+
+  {
+    "id": "smb_sig",
+    "service": "smb",
+    "ports": [445, 139],
+    "confidence": 0.98,
+    "when": {
+      "type": "hex",
+      "pattern": "ff534d42"
+    }
+  },
+
+  {
+    "id": "bind_shell_prompt",
+    "service": "shell",
+    "product": "bind shell",
+    "ports": [1524],
+    "confidence": 0.99,
+    "when": {
+      "type": "contains",
+      "pattern": "root@"
+    }
+  },
+  {
+    "id": "smtp_postfix_banner",
+    "service": "smtp",
+    "product": "Postfix",
+    "ports": [25, 587, 2525],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "esmtp"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)ESMTP\\s+Postfix"
+    }
+  },
+  {
+  "id": "mysql_blocked_host",
+  "service": "mysql",
+  "ports": [3306],
+  "confidence": 0.95,
+  "when": {
+    "type": "contains",
+    "pattern": "mysqladmin flush-hosts"
+  }
+  },
+  {
+    "id": "distccd_banner",
+    "service": "distccd",
+    "ports": [3632],
+    "confidence": 0.95,
+    "when": {
+      "type": "contains",
+      "pattern": "distccd"
+    }
+  },
+
+  {
+    "id": "java_rmi_banner",
+    "service": "java-rmi",
+    "ports": [1099],
+    "confidence": 0.95,
+    "when": {
+      "type": "contains",
+      "pattern": "rmi"
+    }
+  },
+
+  {
+    "id": "dns_banner",
+    "service": "dns",
+    "ports": [53],
+    "confidence": 0.9,
+    "when": {
+      "type": "contains",
+      "pattern": "bind"
+    }
+  },
+
+  {
+    "id": "rpcbind_banner",
+    "service": "rpcbind",
+    "ports": [111],
+    "confidence": 0.9,
+    "when": {
+      "type": "contains",
+      "pattern": "rpc"
+    }
+  },
+
+  {
+    "id": "nfs_banner",
+    "service": "nfs",
+    "ports": [2049],
+    "confidence": 0.9,
+    "when": {
+      "type": "contains",
+      "pattern": "nfs"
+    }
+  },
+
+  {
+    "id": "smb_signature",
+    "service": "smb",
+    "ports": [139, 445],
+    "confidence": 0.98,
+    "when": {
+      "type": "hex",
+      "pattern": "ff534d42"
+    }
+  },
+
+  {
+    "id": "rlogin_shell",
+    "service": "rlogin",
+    "ports": [513],
+    "confidence": 0.9,
+    "when": {
+      "type": "contains",
+      "pattern": "login"
+    }
+  },
+
+  {
+    "id": "rexec_shell",
+    "service": "rexec",
+    "ports": [512],
+    "confidence": 0.9,
+    "when": {
+      "type": "contains",
+      "pattern": "shell"
+    }
+  }
+  
+]

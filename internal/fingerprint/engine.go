@@ -1,15 +1,31 @@
 package fingerprint
 
 type Engine struct {
-	byProtocol map[string][]Pattern
-	generic    []Pattern
-	cache      map[string]*ServiceInfo
+	ProbesByPort  map[int][]Probe
+	GenericProbes []Probe
+
+	Rules []Rule
+
+	//prefixRules map[string][]Rule
+	//tokenRules  map[string][]Rule
+	//magicRules  [][]Rule
 }
 
 func NewEngine() *Engine {
+	e := &Engine{}
 
-	return &Engine{
-		byProtocol: make(map[string][]Pattern),
-		cache:      make(map[string]*ServiceInfo),
+	return e
+}
+
+func (e *Engine) getProbes(port int) []Probe {
+	pp := e.ProbesByPort[port]
+	gp := e.GenericProbes
+	if len(gp) > 5 {
+		gp = gp[:5]
 	}
+
+	out := make([]Probe, 0, len(pp)+len(gp))
+	out = append(out, pp...)
+	out = append(out, gp...)
+	return out
 }

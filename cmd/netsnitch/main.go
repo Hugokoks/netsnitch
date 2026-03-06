@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"syscall"
 
 	"netsnitch/internal/engine"
@@ -41,13 +40,13 @@ func main() {
 
 	// init fingerprint engine
 	fpEngine := fingerprint.NewEngine()
-	fingerprint.LoadProbes("data/probes.json")
-	files, _ := filepath.Glob("data/fingerprints/*.xml")
-
-	for _, f := range files {
-		fpEngine.LoadRecogFile(f)
+	// load fingerprint data
+	if err := fpEngine.LoadRules("data/rules.json"); err != nil {
+		log.Fatalf("detect.json load error: %v", err)
 	}
-
+	if err := fpEngine.LoadProbes("data/probes.json"); err != nil {
+		log.Fatalf("probes.json load error: %v", err)
+	}
 	// Parse input
 	query, err := input.Parse(os.Args[1:])
 	if err != nil {

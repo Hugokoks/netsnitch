@@ -1,144 +1,306 @@
 [
+  {
+    "id": "http_get",
+    "name": "HTTP GET",
+    "payload": "GET / HTTP/1.0\r\nHost: x\r\n\r\n",
+    "ports": [80, 8080, 8000, 8008, 8081, 8888],
+    "weight": 100
+  },
+  {
+    "id": "http_head_generic",
+    "name": "HTTP HEAD (generic)",
+    "payload": "HEAD / HTTP/1.0\r\nHost: x\r\n\r\n",
+    "ports": [],
+    "weight": 20
+  },
+  {
+    "id": "http_options",
+    "name": "HTTP OPTIONS",
+    "payload": "OPTIONS / HTTP/1.0\r\nHost: x\r\n\r\n",
+    "ports": [80, 8080, 8000, 8008, 8081, 8888],
+    "weight": 80
+  },
+
+  {
+    "id": "ftp_help",
+    "name": "FTP HELP",
+    "payload": "HELP\r\n",
+    "ports": [21, 2121],
+    "weight": 100
+  },
+  {
+    "id": "ftp_feat",
+    "name": "FTP FEAT",
+    "payload": "FEAT\r\n",
+    "ports": [21, 2121],
+    "weight": 95
+  },
+  {
+    "id": "ftp_syst",
+    "name": "FTP SYST",
+    "payload": "SYST\r\n",
+    "ports": [21, 2121],
+    "weight": 90
+  },
+
+  {
+    "id": "smtp_ehlo",
+    "name": "SMTP EHLO",
+    "payload": "EHLO netsnitch.local\r\n",
+    "ports": [25, 587, 2525],
+    "weight": 100
+  },
+  {
+    "id": "smtp_helo",
+    "name": "SMTP HELO",
+    "payload": "HELO netsnitch.local\r\n",
+    "ports": [25, 587, 2525],
+    "weight": 90
+  },
+  {
+    "id": "smtp_help",
+    "name": "SMTP HELP",
+    "payload": "HELP\r\n",
+    "ports": [25, 587, 2525],
+    "weight": 80
+  },
+
+  {
+    "id": "pop3_capa",
+    "name": "POP3 CAPA",
+    "payload": "CAPA\r\n",
+    "ports": [110],
+    "weight": 100
+  },
+  {
+    "id": "pop3_quit",
+    "name": "POP3 QUIT",
+    "payload": "QUIT\r\n",
+    "ports": [110],
+    "weight": 60
+  },
+
+  {
+    "id": "imap_capability",
+    "name": "IMAP CAPABILITY",
+    "payload": "a001 CAPABILITY\r\n",
+    "ports": [143],
+    "weight": 100
+  },
+  {
+    "id": "imap_noop",
+    "name": "IMAP NOOP",
+    "payload": "a001 NOOP\r\n",
+    "ports": [143],
+    "weight": 70
+  },
+
+  {
+    "id": "redis_ping",
+    "name": "Redis PING",
+    "payload": "*1\r\n$4\r\nPING\r\n",
+    "ports": [6379],
+    "weight": 100
+  },
+  {
+    "id": "redis_info",
+    "name": "Redis INFO",
+    "payload": "*1\r\n$4\r\nINFO\r\n",
+    "ports": [6379],
+    "weight": 90
+  },
+
+  {
+    "id": "memcached_stats",
+    "name": "Memcached stats",
+    "payload": "stats\r\n",
+    "ports": [11211],
+    "weight": 100
+  },
+  {
+    "id": "memcached_version",
+    "name": "Memcached version",
+    "payload": "version\r\n",
+    "ports": [11211],
+    "weight": 90
+  },
+
+  {
+    "id": "nntp_help",
+    "name": "NNTP HELP",
+    "payload": "HELP\r\n",
+    "ports": [119],
+    "weight": 100
+  },
+
+  {
+    "id": "irc_cap_ls",
+    "name": "IRC CAP LS",
+    "payload": "CAP LS 302\r\n",
+    "ports": [6667, 6697],
+    "weight": 100
+  },
+  {
+    "id": "irc_nick_user",
+    "name": "IRC NICK/USER",
+    "payload": "NICK netsnitch\r\nUSER netsnitch 0 * :netsnitch\r\n",
+    "ports": [6667, 6697],
+    "weight": 90
+  },
+
+  {
+    "id": "rtsp_options",
+    "name": "RTSP OPTIONS",
+    "payload": "OPTIONS * RTSP/1.0\r\nCSeq: 1\r\nUser-Agent: netsnitch\r\n\r\n",
+    "ports": [554, 8554],
+    "weight": 100
+  },
+
+  {
+    "id": "sip_options_udp_style_over_tcp",
+    "name": "SIP OPTIONS",
+    "payload": "OPTIONS sip:netsnitch SIP/2.0\r\nVia: SIP/2.0/TCP netsnitch.local;branch=z9hG4bK-1\r\nFrom: <sip:netsnitch@netsnitch.local>;tag=1\r\nTo: <sip:netsnitch@netsnitch.local>\r\nCall-ID: 1@netsnitch.local\r\nCSeq: 1 OPTIONS\r\nContent-Length: 0\r\n\r\n",
+    "ports": [5060, 5061],
+    "weight": 100
+  },
+
+  {
+    "id": "vnc_rfb",
+    "name": "VNC RFB banner poke",
+    "payload": "RFB 003.008\n",
+    "ports": [5900, 5901, 5902],
+    "weight": 90
+  },
+
+  {
+    "id": "minecraft_legacy_ping",
+    "name": "Minecraft legacy ping",
+    "payload": "\u00fe\u0001",
+    "ports": [25565],
+    "weight": 100
+  },
+
+  {
+    "id": "mysql_null_probe",
+    "name": "MySQL null probe",
+    "payload": "",
+    "ports": [3306],
+    "weight": 100
+  },
+  {
+    "id": "postgres_null_probe",
+    "name": "PostgreSQL null probe",
+    "payload": "",
+    "ports": [5432],
+    "weight": 100
+  },
+
+  {
+    "id": "generic_crlf",
+    "name": "CRLF",
+    "payload": "\r\n\r\n",
+    "ports": [],
+    "weight": 5
+  },
+  {
+    "id": "generic_help",
+    "name": "HELP generic",
+    "payload": "HELP\r\n",
+    "ports": [],
+    "weight": 3
+  },
+  {
+    "id": "generic_quit",
+    "name": "QUIT generic",
+    "payload": "QUIT\r\n",
+    "ports": [],
+    "weight": 2
+  },
     {
-        "name": "NullProbe",
-        "payload": "",
-        "ports": [
-            21,
-            22,
-            23,
-            25,
-            110,
-            143,
-            419,
-            587
-        ],
-        "priority": 1
-    },
-    {
-        "name": "HTTP_Get",
-        "payload": "R0VUIC8gSFRUUC8xLjBcclxuXHJcbg==",
-        "ports": [
-            80,
-            443,
-            8000,
-            8008,
-            8080,
-            8180,
-            8888
-        ],
-        "priority": 1
-    },
-    {
-        "name": "Generic_Line",
-        "payload": "XHJcblxyXG4=",
-        "ports": [],
-        "priority": 3
-    },
-    {
-        "name": "TLS_Hello",
-        "payload": "FgsBAABhAQAAAABXAwEBADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAwADAw",
-        "ports": [
-            443,
-            465,
-            587,
-            993,
-            995,
-            3389,
-            5432,
-            6379,
-            8443
-        ],
-        "priority": 1
-    },
-    {
-        "name": "MySQL_Init",
-        "payload": "BwAAAAADc2VsZWN0IDE=",
-        "ports": [
-            3306
-        ],
-        "priority": 1
-    },
-    {
-        "name": "Postgres_Init",
-        "payload": "AAAACATSFicv",
-        "ports": [
-            5432
-        ],
-        "priority": 1
-    },
-    {
-        "name": "Redis_Ping",
-        "payload": "UElOR1xyXG4=",
-        "ports": [
-            6379
-        ],
-        "priority": 1
-    },
-    {
-        "name": "Memcached_Stats",
-        "payload": "c3RhdHNcclxu",
-        "ports": [
-            11211
-        ],
-        "priority": 1
-    },
-    {
-        "name": "SMB_Neg",
-        "payload": "AAABAF9TTUJyAAAAAAAAAA==",
-        "ports": [
-            445
-        ],
-        "priority": 1
-    },
-    {
-        "name": "RDP_Cookie",
-        "payload": "Q29va2llOiBtc3RzaGFzaD1ubWFwXHJcbg==",
-        "ports": [
-            3389
-        ],
-        "priority": 1
-    },
-    {
-        "name": "SIP_Options",
-        "payload": "T1BUSU9OUyBzaXA6bm0gU0lQLzIuMFxyXG5cclxu",
-        "ports": [
-            5060
-        ],
-        "priority": 1
-    },
-    {
-        "name": "Help_Cmd",
-        "payload": "SEVMUFxyXG4=",
-        "ports": [
-            21,
-            25,
-            110
-        ],
-        "priority": 2
-    },
-    {
-        "name": "VNC_Spec",
-        "payload": "UkZCIDAwMy4wMDgK",
-        "ports": [
-            5900,
-            5901
-        ],
-        "priority": 1
-    },
-    {
-        "name": "MongoDB_IsMaster",
-        "payload": "OwAAAGlzTWFzdGVyOjE=",
-        "ports": [
-            27017
-        ],
-        "priority": 1
-    },
-    {
-        "name": "DNS_Status",
-        "payload": "AAABAAAAAAAAAAAA",
-        "ports": [
-            53
-        ],
-        "priority": 1
-    }
+    "id": "ldap_root_dse",
+    "name": "LDAP RootDSE query",
+    "payload_b64": "MC4CAQABAgEwJQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALDAP",
+    "ports": [389],
+    "weight": 100
+  },
+
+  {
+    "id": "mqtt_connect",
+    "name": "MQTT CONNECT",
+    "payload_b64": "EAAEAAAAAQAGbWVzc2FnZQ==",
+    "ports": [1883],
+    "weight": 100
+  },
+
+  {
+    "id": "couchdb_get",
+    "name": "CouchDB HTTP GET",
+    "payload": "GET / HTTP/1.0\r\nHost: x\r\n\r\n",
+    "ports": [5984],
+    "weight": 100
+  },
+
+  {
+    "id": "elasticsearch_http",
+    "name": "Elasticsearch probe",
+    "payload": "GET / HTTP/1.0\r\nHost: elastic\r\n\r\n",
+    "ports": [9200],
+    "weight": 100
+  },
+
+  {
+    "id": "docker_api_version",
+    "name": "Docker API version",
+    "payload": "GET /version HTTP/1.0\r\nHost: docker\r\n\r\n",
+    "ports": [2375, 2376],
+    "weight": 100
+  },
+
+  {
+    "id": "amqp_protocol_header",
+    "name": "AMQP protocol header",
+    "payload": "AMQP\u0000\u0000\u0009\u0001",
+    "ports": [5672],
+    "weight": 100
+  },
+
+  {
+    "id": "kubernetes_api",
+    "name": "Kubernetes API probe",
+    "payload": "GET /version HTTP/1.0\r\nHost: kube\r\n\r\n",
+    "ports": [6443],
+    "weight": 100
+  },
+
+  {
+    "id": "git_upload_pack",
+    "name": "Git smart HTTP probe",
+    "payload": "GET /info/refs?service=git-upload-pack HTTP/1.0\r\nHost: git\r\n\r\n",
+    "ports": [9418],
+    "weight": 100
+  },
+
+  {
+    "id": "rsync_version",
+    "name": "rsync probe",
+    "payload": "@RSYNCD: 31\n",
+    "ports": [873],
+    "weight": 100
+  },
+
+  {
+    "id": "rdp_negotiation",
+    "name": "RDP negotiation request",
+    "payload_b64": "AwMCAgAJAAABAAAAAA==",
+    "ports": [3389],
+    "weight": 100
+  },
+
+  {
+    "id": "smb2_negotiate",
+    "name": "SMB2 negotiate",
+    "payload_b64": "AAABAAEAAAD/////AAAAAA==",
+    "ports": [445],
+    "weight": 100
+  }
 ]
