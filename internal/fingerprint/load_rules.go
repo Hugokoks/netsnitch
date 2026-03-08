@@ -1,9 +1,12 @@
 package fingerprint
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
+	"strings"
 )
 
 func (e *Engine) LoadRules(path string) error {
@@ -19,11 +22,33 @@ func (e *Engine) LoadRules(path string) error {
 
 	// Basic sanity: keep only rules with service + id
 	filtered := make([]Rule, 0, len(rules))
-	for _, r := range rules {
+	for i := range rules {
+
+		r := &rules[i]
+
 		if r.ID == "" || r.Service == "" {
 			continue
 		}
-		filtered = append(filtered, r)
+
+		///regex precompile
+		if r.Match != nil && r.Match.Type == "regex" {
+			re, err := regexp.Compile(r.Match.Pattern)
+			if err != nil {
+				continue
+			}
+			r.re = re
+		}
+		/// hex precompile
+		if r.When != nil && r.When.Type == "hex" {
+
+			sig, err := hex.DecodeString(strings.TrimSpace(r.When.Pattern))
+			if err != nil || len(sig) == 0 {
+				continue
+			}
+			r.whenHex = sig
+		}
+
+		filtered = append(filtered, *r)
 	}
 
 	e.Rules = filtered

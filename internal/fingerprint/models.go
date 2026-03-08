@@ -1,5 +1,7 @@
 package fingerprint
 
+import "regexp"
+
 type ServiceInfo struct {
 	Service    string  `json:"service"`
 	Product    string  `json:"product,omitempty"`
@@ -19,6 +21,9 @@ type Rule struct {
 	When    *When   `json:"when,omitempty"`
 	Match   *Match  `json:"match,omitempty"`
 	Extract Extract `json:"extract,omitempty"`
+
+	re      *regexp.Regexp `json:"-"`
+	whenHex []byte         `json:"-"`
 }
 
 type When struct {

@@ -2,8 +2,6 @@ package fingerprint
 
 import (
 	"bytes"
-	"encoding/hex"
-	"regexp"
 	"strings"
 )
 
@@ -29,6 +27,7 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 			}
 		}
 
+		/*TEST Performance and accuracy without When*/
 		switch r.When.Type {
 		case "prefix":
 			if !strings.HasPrefix(raw, r.When.Pattern) {
@@ -41,11 +40,10 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 			}
 
 		case "hex":
-			sig, err := hex.DecodeString(strings.TrimSpace(r.When.Pattern))
-			if err != nil || len(sig) == 0 {
+			if len(r.whenHex) == 0 {
 				continue
 			}
-			if !bytes.Contains(rawBytes, sig) {
+			if !bytes.Contains(rawBytes, r.whenHex) {
 				continue
 			}
 		}
@@ -63,12 +61,12 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 
 		switch r.Match.Type {
 		case "regex":
-			re, err := regexp.Compile(r.Match.Pattern)
-			if err != nil {
+
+			if r.re == nil {
 				continue
 			}
 
-			m := re.FindStringSubmatch(raw)
+			m := r.re.FindStringSubmatch(raw)
 			if m == nil {
 				continue
 			}
