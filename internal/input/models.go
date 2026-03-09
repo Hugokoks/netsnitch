@@ -192,5 +192,4 @@ func PrintHelp() {
 	}
 
 	fmt.Println("\n" + strings.Repeat("=", 40))
-	fmt.Println("Tip: Use 'netsnitch <protocol> -h' for protocol-specific help.")
 }
