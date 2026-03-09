@@ -28,16 +28,16 @@ var FlagRegistry = map[string]FlagSpec{
 		Usage:       "-p (1-100 | 80,443)",
 		Description: "Target ports: supports ranges, lists, or single ports.",
 	},
-	"mode": {
+	"m": {
 		HasValue:    true,
 		Default:     "full",
-		Usage:       "-mode (f | s)",
+		Usage:       "-m (f | s)",
 		Description: "Scan strategy: 'f' for full handshake, 's' for stealth SYN.",
 	},
-	"render": {
+	"r": {
 		HasValue:    true,
 		Default:     "rows",
-		Usage:       "-render (rows | json)",
+		Usage:       "-r (raws | json)",
 		Description: "Output format: table rows or machine-readable JSON.",
 	},
 	"t": {
@@ -46,9 +46,9 @@ var FlagRegistry = map[string]FlagSpec{
 		Usage:       "-t (1s | 500ms)",
 		Description: "Network timeout: higher value means better accuracy on slow links.",
 	},
-	"open": {
+	"o": {
 		HasValue:    false,
-		Usage:       "-open",
+		Usage:       "-o",
 		Description: "Show only active/open ports; hide everything else.",
 	},
 	"h": {
@@ -71,11 +71,11 @@ var ScanRegistry = map[string]ScanSpec{
 		Description: "Performs deep inspection of TCP ports to identify active services and potential entry points.",
 		Example:     "tcp 192.168.1.1 -p 1-1024 -mode s -open",
 		UsableFlags: map[string]FlagSpec{
-			"p":      FlagRegistry["p"],
-			"mode":   FlagRegistry["mode"],
-			"t":      FlagRegistry["t"],
-			"open":   FlagRegistry["open"],
-			"render": FlagRegistry["render"],
+			"p": FlagRegistry["p"],
+			"m": FlagRegistry["m"],
+			"t": FlagRegistry["t"],
+			"o": FlagRegistry["o"],
+			"r": FlagRegistry["r"],
 		},
 	},
 	"arp": {
@@ -83,8 +83,8 @@ var ScanRegistry = map[string]ScanSpec{
 		Description: "Maps the local network by resolving IP addresses to MAC addresses using ARP requests. Ideal for fast host discovery.",
 		Example:     "arp 192.168.1.0/24 -t 500ms",
 		UsableFlags: map[string]FlagSpec{
-			"t":      FlagRegistry["t"],
-			"render": FlagRegistry["render"],
+			"t": FlagRegistry["t"],
+			"r": FlagRegistry["r"],
 		},
 	},
 	"udp": {
@@ -92,9 +92,9 @@ var ScanRegistry = map[string]ScanSpec{
 		Description: "Scans for open UDP ports. Note: UDP is connectionless and results may be less reliable than TCP.",
 		Example:     "udp 192.168.1.1 -p 53,161",
 		UsableFlags: map[string]FlagSpec{
-			"p":      FlagRegistry["p"],
-			"t":      FlagRegistry["t"],
-			"render": FlagRegistry["render"],
+			"p": FlagRegistry["p"],
+			"t": FlagRegistry["t"],
+			"r": FlagRegistry["r"],
 		},
 	},
 }
