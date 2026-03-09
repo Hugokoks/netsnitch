@@ -9,9 +9,10 @@ import (
 func TestInput(t *testing.T) {
 
 	args := []string{
-		"tcp", "192.168.1.1", "-p", "66,222,122", "-open",
+		//"tcp", "192.168.1.1", "-p", "66,222,122", "-o", "-r", "json", "-t", "500ms",
 		//"tcp", "-h",
-		//"-h",
+		"-h",
+		//"tcp", "192.168.1.1", "-p", "66,222,122", "-o", "-t", "500ms",
 	}
 
 	query, err := input.Parse(args)

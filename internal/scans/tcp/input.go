@@ -40,12 +40,12 @@ func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error 
 	// ----mode----
 	var mode domain.ScanMode
 
-	if m, ok := flags["mode"]; ok {
+	if m, ok := flags["m"]; ok {
 		mode, _ = domain.ParseScanMode(m)
 	}
 
 	// ----OpenOnly---
-	if _, ok := flags["open"]; ok {
+	if _, ok := flags["o"]; ok {
 
 		cfg.OpenOnly = true
 

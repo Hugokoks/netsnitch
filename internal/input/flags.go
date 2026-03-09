@@ -61,7 +61,7 @@ func applyGlobalFlags(cfg *domain.Config, flags Flags) error {
 	}
 
 	// Parse output render type if provided
-	if val, ok := flags["render"]; ok {
+	if val, ok := flags["r"]; ok {
 		render, err := domain.ParseRenderType(val)
 		if err != nil {
 			return fmt.Errorf("invalid render expression %s", val)
@@ -70,7 +70,7 @@ func applyGlobalFlags(cfg *domain.Config, flags Flags) error {
 	}
 
 	// Set OpenOnly filter if flag is present
-	if _, ok := flags["open"]; ok {
+	if _, ok := flags["o"]; ok {
 		cfg.OpenOnly = true
 	}
 

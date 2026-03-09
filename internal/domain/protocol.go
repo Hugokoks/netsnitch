@@ -15,6 +15,6 @@ const (
 	ARP_ACTIVE  ScanMode = "active"
 	ARP_PASSIVE ScanMode = "passive"
 
-	ROWS_OUT RenderType = "rows"
+	ROWS_OUT RenderType = "raw"
 	JSON_OUT RenderType = "json"
 )

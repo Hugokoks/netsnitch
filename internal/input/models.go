@@ -30,14 +30,13 @@ var FlagRegistry = map[string]FlagSpec{
 	},
 	"m": {
 		HasValue:    true,
-		Default:     "full",
 		Usage:       "-m (f | s)",
 		Description: "Scan strategy: 'f' for full handshake, 's' for stealth SYN.",
 	},
 	"r": {
 		HasValue:    true,
-		Default:     "rows",
-		Usage:       "-r (raws | json)",
+		Default:     "raw",
+		Usage:       "-r (raw | json)",
 		Description: "Output format: table rows or machine-readable JSON.",
 	},
 	"t": {
@@ -50,6 +49,7 @@ var FlagRegistry = map[string]FlagSpec{
 		HasValue:    false,
 		Usage:       "-o",
 		Description: "Show only active/open ports; hide everything else.",
+		Default:     "open",
 	},
 	"h": {
 		HasValue:    false,
@@ -69,7 +69,7 @@ var ScanRegistry = map[string]ScanSpec{
 	"tcp": {
 		Usage:       "tcp <target> [flags] ",
 		Description: "Performs deep inspection of TCP ports to identify active services and potential entry points.",
-		Example:     "tcp 192.168.1.1 -p 1-1024 -mode s -open",
+		Example:     "tcp 192.168.1.1 -p 1-1024 -m s -o",
 		UsableFlags: map[string]FlagSpec{
 			"p": FlagRegistry["p"],
 			"m": FlagRegistry["m"],
