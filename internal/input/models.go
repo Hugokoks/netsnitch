@@ -67,9 +67,9 @@ type ScanSpec struct {
 
 var ScanRegistry = map[string]ScanSpec{
 	"tcp": {
-		Usage:       "tcp [flags] <target>",
+		Usage:       "tcp <target> [flags] ",
 		Description: "Performs deep inspection of TCP ports to identify active services and potential entry points.",
-		Example:     "tcp -p 1-1024 -mode s -open 192.168.1.1",
+		Example:     "tcp 192.168.1.1 -p 1-1024 -mode s -open",
 		UsableFlags: map[string]FlagSpec{
 			"p":      FlagRegistry["p"],
 			"mode":   FlagRegistry["mode"],
@@ -79,18 +79,18 @@ var ScanRegistry = map[string]ScanSpec{
 		},
 	},
 	"arp": {
-		Usage:       "arp [flags] <target>",
+		Usage:       "arp <target> [flags] ",
 		Description: "Maps the local network by resolving IP addresses to MAC addresses using ARP requests. Ideal for fast host discovery.",
-		Example:     "arp -t 500ms 192.168.1.0/24",
+		Example:     "arp 192.168.1.0/24 -t 500ms",
 		UsableFlags: map[string]FlagSpec{
 			"t":      FlagRegistry["t"],
 			"render": FlagRegistry["render"],
 		},
 	},
 	"udp": {
-		Usage:       "udp [flags] <target>",
+		Usage:       "udp <target> [flags]",
 		Description: "Scans for open UDP ports. Note: UDP is connectionless and results may be less reliable than TCP.",
-		Example:     "udp -p 53,161 192.168.1.1",
+		Example:     "udp 192.168.1.1 -p 53,161",
 		UsableFlags: map[string]FlagSpec{
 			"p":      FlagRegistry["p"],
 			"t":      FlagRegistry["t"],

@@ -9,8 +9,8 @@ import (
 func TestInput(t *testing.T) {
 
 	args := []string{
-		//"tcp", "-p", "66,222,122", "-open", "192.168.1.1",
-		"tcp", "-h",
+		"tcp", "192.168.1.1", "-p", "66,222,122", "-open",
+		//"tcp", "-h",
 		//"-h",
 	}
 
