@@ -49,7 +49,7 @@ var FlagRegistry = map[string]FlagSpec{
 		HasValue:    false,
 		Usage:       "-o",
 		Description: "Show only active/open ports; hide everything else.",
-		Default:     "open",
+		Default:     "show all",
 	},
 	"h": {
 		HasValue:    false,
@@ -143,7 +143,7 @@ func GetUsage(proto domain.Protocol) string {
 func PrintHelp() {
 	fmt.Println("NetSnitch - Intelligent Network Scanner")
 	fmt.Println("=======================================")
-	fmt.Println("\nUsage: netsnitch <protocol> [flags] <target>")
+	fmt.Println("\nUsage: netsnitch <protocol> <target> [flags] ")
 
 	// 1. Sekce SCANNERY
 	fmt.Println("\nAVAILABLE SCANS:")
