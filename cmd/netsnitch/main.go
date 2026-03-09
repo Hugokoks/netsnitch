@@ -33,23 +33,18 @@ func main() {
 
 	defer stop()
 
-	if len(os.Args) < 2 {
-		fmt.Println("usage: netsnitch <query>")
-		os.Exit(1)
+	// init fingerprint engine
+	fpEngine, err := fingerprint.InitFPEngine()
+	if err != nil {
+		log.Fatalf("FP Init failed: %v", err)
 	}
 
-	// init fingerprint engine
-	fpEngine := fingerprint.NewEngine()
-	// load fingerprint data
-	if err := fpEngine.LoadRules("data/rules.json"); err != nil {
-		log.Fatalf("detect.json load error: %v", err)
-	}
-	if err := fpEngine.LoadProbes("data/probes.json"); err != nil {
-		log.Fatalf("probes.json load error: %v", err)
-	}
 	// Parse input
 	query, err := input.Parse(os.Args[1:])
 	if err != nil {
+		if err == input.ErrHelpRequested {
+			return
+		}
 		fmt.Println("input error:", err)
 		os.Exit(1)
 	}

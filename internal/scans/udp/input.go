@@ -12,10 +12,15 @@ func (Parser) Protocol() domain.Protocol {
 	return domain.UDP
 }
 
+func (Parser) Usage() string {
+
+	return input.GetUsage(domain.UDP)
+}
+
 func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error {
 
 	if len(rest) < 2 {
-		return fmt.Errorf("usage: udp [--p <p>] <cidr|ip>")
+		return fmt.Errorf("usage %s", Parser{}.Usage())
 	}
 	ipToken := rest[len(rest)-1]
 

@@ -9,6 +9,7 @@ type Parser interface {
 	Protocol() domain.Protocol
 	Parse(cfg *domain.Config, rest []string, flags Flags) error
 	ApplyDefaults(cfg *domain.Config)
+	Usage() string
 }
 
 var parsers = map[domain.Protocol]Parser{}

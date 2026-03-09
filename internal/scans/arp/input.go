@@ -14,10 +14,15 @@ func (Parser) Protocol() domain.Protocol {
 
 }
 
+func (Parser) Usage() string {
+
+	return input.GetUsage(domain.ARP)
+}
+
 func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error {
 
 	if len(rest) < 2 {
-		return fmt.Errorf("usage: arp <cidr>")
+		return fmt.Errorf("usage %s", Parser{}.Usage())
 	}
 
 	//// ---- scope ----

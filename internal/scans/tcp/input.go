@@ -2,7 +2,6 @@ package tcp
 
 import (
 	"fmt"
-
 	"netsnitch/internal/domain"
 	"netsnitch/internal/input"
 )
@@ -13,10 +12,15 @@ func (Parser) Protocol() domain.Protocol {
 	return domain.TCP
 }
 
+func (Parser) Usage() string {
+
+	return input.GetUsage(domain.TCP)
+
+}
 func (Parser) Parse(cfg *domain.Config, rest []string, flags input.Flags) error {
 
 	if len(rest) < 2 {
-		return fmt.Errorf("usage: tcp [--p <p>] <cidr|ip>")
+		return fmt.Errorf("usage %s", Parser{}.Usage())
 	}
 
 	ipToken := rest[len(rest)-1]

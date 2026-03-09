@@ -1,20 +1,41 @@
 package fingerprint
 
+import (
+	"os"
+	"path/filepath"
+)
+
 type Engine struct {
 	ProbesByPort  map[int][]Probe
 	GenericProbes []Probe
 
-	Rules []Rule
-
-	//prefixRules map[string][]Rule
-	//tokenRules  map[string][]Rule
-	//magicRules  [][]Rule
+	portRules    []*Rule
+	genericRules []*Rule
 }
 
 func NewEngine() *Engine {
 	e := &Engine{}
 
 	return e
+}
+
+func InitFPEngine() (*Engine, error) {
+
+	exePath, _ := os.Executable()
+	exeDir := filepath.Dir(exePath)
+
+	rulesPath := filepath.Join(exeDir, "data", "rules.json")
+	probesPath := filepath.Join(exeDir, "data", "probes.json")
+
+	fp := NewEngine()
+
+	if err := fp.LoadRules(rulesPath); err != nil {
+		return nil, err
+	}
+	if err := fp.LoadProbes(probesPath); err != nil {
+		return nil, err
+	}
+	return fp, nil
 }
 
 func (e *Engine) getProbes(port int) []Probe {

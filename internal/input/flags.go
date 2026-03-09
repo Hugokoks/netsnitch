@@ -7,44 +7,7 @@ import (
 	"time"
 )
 
-type FlagSpec struct {
-	HasValue bool
-	Default  string
-	Usage    string
-}
-
-var FlagRegistry = map[string]FlagSpec{
-	"p": {
-		HasValue: true,
-		Usage:    "Port range or list (e.g. 1-100 or 80,443)",
-	},
-	"mode": {
-		HasValue: true,
-		Default:  "full",
-		Usage:    "Scan mode (full | stealth)",
-	},
-	"render": {
-		HasValue: true,
-		Default:  "rows",
-		Usage:    "Output format (rows | json)",
-	},
-	"t": {
-		HasValue: true,
-		Default:  "1s",
-		Usage:    "Timeout (e.g. 500ms, 2s)",
-	},
-	"open": {
-		HasValue: false,
-		Usage:    "Show only open ports",
-	},
-	"help": {
-		HasValue: false,
-		Usage:    "Show help message",
-	},
-}
-
-type Flags map[string]string
-
+// ExtractFlags separates flags from positional arguments (rest)
 func ExtractFlags(tokens []string) (Flags, []string, error) {
 	flags := make(Flags)
 	var rest []string
@@ -52,45 +15,43 @@ func ExtractFlags(tokens []string) (Flags, []string, error) {
 	for i := 0; i < len(tokens); i++ {
 		t := tokens[i]
 
-		if strings.HasPrefix(t, "--") {
-
-			key := t[2:]
+		// Check if token starts with at least one dash
+		if strings.HasPrefix(t, "-") {
+			// Handle both -flag and --flag by trimming all leading dashes
+			key := strings.TrimLeft(t, "-")
 
 			spec, exists := FlagRegistry[key]
 			if !exists {
-				return nil, nil, fmt.Errorf("unknown flag --%s", key)
+				return nil, nil, fmt.Errorf("unknown flag -%s", key)
 			}
 
-			// Flag expects value
+			// Flag requires an associated value
 			if spec.HasValue {
-
-				if i+1 >= len(tokens) {
-					return nil, nil, fmt.Errorf("flag --%s requires a value", key)
-				}
-
-				if strings.HasPrefix(tokens[i+1], "--") {
-					return nil, nil, fmt.Errorf("flag --%s requires a value", key)
+				// Check if there is a next token and it's not another flag
+				if i+1 >= len(tokens) || strings.HasPrefix(tokens[i+1], "-") {
+					return nil, nil, fmt.Errorf("flag -%s requires a value", key)
 				}
 
 				flags[key] = tokens[i+1]
-				i++
+				i++ // Skip the value token in the next iteration
 				continue
 			}
 
-			// Boolean flag
+			// Boolean (switch) flag
 			flags[key] = "true"
 			continue
 		}
 
+		// Positional argument (protocol, IP, etc.)
 		rest = append(rest, t)
 	}
 
 	return flags, rest, nil
 }
 
+// applyGlobalFlags maps extracted flags to the domain Config object
 func applyGlobalFlags(cfg *domain.Config, flags Flags) error {
-
-	// Timeout from CLI
+	// Parse timeout duration if provided
 	if val, ok := flags["t"]; ok {
 		dur, err := time.ParseDuration(val)
 		if err != nil {
@@ -99,13 +60,18 @@ func applyGlobalFlags(cfg *domain.Config, flags Flags) error {
 		cfg.Timeout = dur
 	}
 
-	// Render type from CLI
+	// Parse output render type if provided
 	if val, ok := flags["render"]; ok {
 		render, err := domain.ParseRenderType(val)
 		if err != nil {
 			return fmt.Errorf("invalid render expression %s", val)
 		}
 		cfg.Render = render
+	}
+
+	// Set OpenOnly filter if flag is present
+	if _, ok := flags["open"]; ok {
+		cfg.OpenOnly = true
 	}
 
 	return nil

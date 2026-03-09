@@ -5,13 +5,14 @@ import (
 	"netsnitch/internal/domain"
 )
 
-type Query struct {
-	Configs []domain.Config
-}
-
 func Parse(args []string) (Query, error) {
 	if len(args) == 0 {
 		return Query{}, fmt.Errorf("empty input")
+	}
+	firstArg := args[0]
+	if firstArg == "-h" || firstArg == "-help" || firstArg == "--help" {
+		PrintHelp()
+		return Query{}, ErrHelpRequested // Return empty config to stop execution
 	}
 
 	// split on stages
@@ -62,9 +63,6 @@ func Parse(args []string) (Query, error) {
 
 	return Query{Configs: configs}, nil
 }
-
-// // return with multiple commands && [[arp, 192.168.0.0/24], [tcp, 22,444,420, 192.168.0.3]]
-// // return single commands [[arp, 192.168.0.0/24]]
 
 func splitStages(args []string) [][]string {
 	var stages [][]string
