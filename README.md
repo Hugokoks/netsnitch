@@ -92,17 +92,20 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 ------
 
 ## Flags Usage
-- -h:
+
+[-h]:
+  
   usage:       -h
+  
   description: Show help and exit.
 
-- -m:
+[-m]:
 
   usage:       -m (f | s)
 
   description: Scan strategy: 'f' for full handshake, 's' for stealth SYN.
 
-- -o:
+[-o]:
 
   usage:       -o
 
@@ -116,7 +119,7 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
   description: Target ports: supports ranges, lists, or single ports.
 
-- -r:
+[-r]:
 
   usage:       -r (raw | json)
 
@@ -124,7 +127,7 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
   default:     raw
 
-- -t:
+[-t]:
 
   usage:       -t (1s | 500ms)
 
@@ -132,19 +135,19 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
   default:     1s
 
-- Port Selection:
+[Port Selection]:
 
 - -p all           scan all ports
 - -p 1-100         port range
 - -p 1,2,3,4,5,6   explicit port list
 
-- Target Selection:
+[Target Selection]:
 
 - 192.168.0.5                 single IP address
 - 192.168.0.1,192.168.0.5     multiple IP addresses
 - 192.168.0.0/24              CIDR network
 
-- Timeout Selection:
+[Timeout Selection]:
 
 - -t 200ms    200 miliseconds
 - -t 2s       2 seconds 
