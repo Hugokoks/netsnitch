@@ -1,7 +1,7 @@
 # Netsnitch
 
-A modular high-performance network scanner written in Go.
-
+**A modular high-performance network scanner written in Go.
+**
 Netsnitch uses a scheduler and worker pool architecture to execute scan
 tasks concurrently and identify services using a fingerprint engine.
 
@@ -69,19 +69,23 @@ Flags: -r,-t
 [TCP Port Scan]:
 
 Usage:  tcp <target> [flags]
+
 Example:
 ```bash
 sudo ./netsnitch tcp 192.168.1.1 -p 1-1024 -m s -o
 ```
+
 Flags: -m, -o, -p, -r, -t
 
 [UDP Port Scan]
 
 Usage: udp <target> [flags]
+
 Example: 
 ```bash
 sudo ./netsnitch udp 192.168.1.1 -p 53,161 -t 500ms
 ```
+
 Flags: -p, -r, -t
 
 [Parallel Scans]:
