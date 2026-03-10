@@ -1,43 +1,44 @@
 # Netsnitch
 
-**A modular high-performance network scanner written in Go.**
+![Go](https://img.shields.io/badge/Go-1.22-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-active-orange)
+
+**A modular high-performance network scanner built with Go.**
 
 Netsnitch uses a scheduler and worker pool architecture to execute scan
 tasks concurrently and identify services using a fingerprint engine.
 
 ----
 
-## Features
+## 🚀 Features
 
-- Concurrent scanning engine using goroutines
-- Scheduler with worker pool design
-- Modular scan task builders
-- Service fingerprinting based on probes and pattern matching
-- Configurable scanning via CLI flags
-- Designed for extensibility and future AI analysis
+- **Concurrent scanning engine using goroutines**
+- **Scheduler with worker pool design**
+- **Modular scan task builders**
+- **Service fingerprinting based on probes and pattern matching**
+- **Configurable scanning via CLI flags**
+- **Designed for extensibility and future AI analysis**
 ----
 
-## Supported Scan Types
+## 🔎 Supported Scan Types
   
 - ARP-based host discovery
-- TCP port scanning
+- TCP port scanning (SYN / full handshake)
 - UDP port scanning
-- more coming...
+- More scan modules coming soon
+
 ----
 
-## Installation
+## ⚙️  Installation
 ```bash
 git clone https://github.com/Hugokoks/netsnitch
-```
-```bash 
 cd netsnitch
-```
-```bash 
 go build -o netsnitch ./cmd/netsnitch
 ```
 ----
 
-## Extending the Framework
+## 🧩 Extending the Framework
 
 Netsnitch is designed to be easily extensible through self-registered scan modules.
 
@@ -54,7 +55,7 @@ the core framework logic.
 
 ------
 
-## Scan Usage
+## 💻 Scan Usage
 
 **ARP Scan:**
 
@@ -91,7 +92,7 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
 ------
 
-## Flags Usage
+## 💻 Flags Usage
 
 **-h:**
   
@@ -155,7 +156,7 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
 ------
 
-## Roadmap
+## 🏁 Roadmap
 
 - Web UI dashboard
 - AI-assisted scan analysis
