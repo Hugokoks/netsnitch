@@ -1,33 +1,50 @@
 # Netsnitch
 
-Netsnitch is a modular network scanning framework written in Go.
-It is designed to explore low-level networking, concurrency, and clean
-system-oriented architecture.
+Netsnitch is a high-performance network scanner written in Go.
 
-The core idea behind Netsnitch is to provide a flexible scanning engine
-that can execute different scan types without being tightly coupled
-to their internal logic.
-
+It uses a scheduler and worker pool architecture to execute scan tasks concurrently
+and identify services using a fingerprint engine.
 ----
 
-## Key Features
+## Features
 
-- Modular scan architecture (easily extensible)
-- Task-based execution engine
-- Concurrent scan execution using goroutines
-- Supports running multiple scan strategies in parallel
-- Clean separation between scan engine and scan implementations
-- Linux-focused networking
-
+- Concurrent scanning engine using goroutines
+- Scheduler with worker pool design
+- Modular scan task builders
+- Service fingerprinting based on probes and pattern matching
+- Configurable scanning via CLI flags
+- Designed for extensibility and future AI analysis
 ----
+
+## Architecture
+
+CLI
+ ↓
+Task Builders
+ ↓
+Scheduler
+ ↓
+Worker Pool
+ ↓
+Scan Tasks
+ ↓
+Fingerprint Engine
+ ↓
+Results
 
 ## Supported Scan Types
   
 - ARP-based host discovery
 - TCP port scanning
+- UDP port scanning
 - more coming...
-
 ----
+
+## Installation
+
+git clone https://github.com/Hugokoks/netsnitch
+cd netsnitch
+go build -o netsnitch ./cmd/netsnitch
 
 ## Extending the Framework
 
@@ -46,41 +63,86 @@ the core framework logic.
 
 ------
 
-## Usage
+## Scan Usage
 
-Example commands:
+[ARP Scan]:
+Usage: arp <target> [flags]
+Example: ```bash
+sudo ./netsnitch arp 192.168.1.0/24 -t 500ms 
+```
+Flags: -r,-t
 
-ARP Scan:
-sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24
+[TCP Port Scan]:
+Usage:  tcp <target> [flags]
+Example: ```bash
+sudo ./netsnitch tcp 192.168.1.1 -p 1-1024 -m s -o
+```
+Flags: -m, -o, -p, -r, -t
 
-TCP port Scan:
+[UDP Port Scan]
+Usage: udp <target> [flags]
+Example: ```bash
+sudo ./netsnitch udp 192.168.1.1 -p 53,161 -t 500ms
+```
+Flags: -p, -r, -t
+
+[Parallel Scans]:
+
 ```bash
-sudo go run cmd/netsnitch/main.go tcp --p 1-100 192.168.0.5
+sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 ```
-CIDR notation:
-```bash 
-sudo go run cmd/netsnitch/main.go tcp --p 1-100 192.168.0.0/24
-```
-Port Selection:
-- --p all           scan all ports
-- --p 1-100         port range
-- --p 1,2,3,4,5,6   explicit port list
 
-If the `--ports` flag is not provided, a predefined set of ports is scanned.
-Default settings are defined in `domain/config.go`.
+------
 
-Parallel Scans:
-```bash
-sudo go run cmd/netsnitch/main.go arp 192.168.0.0/24 "&&" tcp --p 1-100 192.168.0.1
-```
-Target Selection:
+## Flags Usage
+[h]:
+  usage:       -h
+  description: Show help and exit.
+
+[m]:
+  usage:       -m (f | s)
+  description: Scan strategy: 'f' for full handshake, 's' for stealth SYN.
+
+[o]:
+  usage:       -o
+  description: Show only active/open ports; hide everything else.
+  default:     show all
+
+[p]:
+  usage:       -p (1-100 | 80,443)
+  description: Target ports: supports ranges, lists, or single ports.
+
+[r]:
+  usage:       -r (raw | json)
+  description: Output format: table rows or machine-readable JSON.
+  default:     raw
+
+[t]:
+  usage:       -t (1s | 500ms)
+  description: Network timeout: higher value means better accuracy on slow links.
+  default:     1s
+
+[Port Selection]:
+- -p all           scan all ports
+- -p 1-100         port range
+- -p 1,2,3,4,5,6   explicit port list
+
+
+[Target Selection]:
 - 192.168.0.5                 single IP address
 - 192.168.0.1,192.168.0.5     multiple IP addresses
 - 192.168.0.0/24              CIDR network
 
-Timeout Selection:
-- --t 200ms    200 miliseconds
-- --t 2s       2 seconds 
-- --t 1m       1 minutes 
+[Timeout Selection]:
+- -t 200ms    200 miliseconds
+- -t 2s       2 seconds 
+- -t 1m       1 minutes 
 
+------
 
+## Roadmap
+
+- Web UI dashboard
+- AI-assisted scan analysis
+- Expanded fingerprint database
+- Distributed scanning
