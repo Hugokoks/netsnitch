@@ -41,10 +41,16 @@ Results
 ----
 
 ## Installation
-
+```bash
 git clone https://github.com/Hugokoks/netsnitch
+```
+```bash 
 cd netsnitch
+```
+```bash 
 go build -o netsnitch ./cmd/netsnitch
+```
+----
 
 ## Extending the Framework
 
@@ -74,14 +80,16 @@ Flags: -r,-t
 
 [TCP Port Scan]:
 Usage:  tcp <target> [flags]
-Example: ```bash
+Example:
+```bash
 sudo ./netsnitch tcp 192.168.1.1 -p 1-1024 -m s -o
 ```
 Flags: -m, -o, -p, -r, -t
 
 [UDP Port Scan]
 Usage: udp <target> [flags]
-Example: ```bash
+Example: 
+```bash
 sudo ./netsnitch udp 192.168.1.1 -p 53,161 -t 500ms
 ```
 Flags: -p, -r, -t
