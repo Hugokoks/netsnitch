@@ -95,45 +95,45 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
 **[-h]:**
   
-  usage:       -h
+- usage:       -h
   
-  description: Show help and exit.
+- description: Show help and exit.
 
 **[-m]:**
 
-  usage:       -m (f | s)
+- usage:       -m (f | s)
 
-  description: Scan strategy: 'f' for full handshake, 's' for stealth SYN.
+- description: Scan strategy: 'f' for full handshake, 's' for stealth SYN.
 
 **[-o]:**
 
-  usage:       -o
+- usage:       -o
 
-  description: Show only active/open ports; hide everything else.
+- description: Show only active/open ports; hide everything else.
 
-  default:     show all
+- default:     show all
 
 **[-p]:**
 
-  usage:       -p (1-100 | 80,443)
+- usage:       -p (1-100 | 80,443)
 
-  description: Target ports: supports ranges, lists, or single ports.
+- description: Target ports: supports ranges, lists, or single ports.
 
 **[-r]:**
 
-  usage:       -r (raw | json)
+- usage:       -r (raw | json)
 
-  description: Output format: table rows or machine-readable JSON.
+- description: Output format: table rows or machine-readable JSON.
 
-  default:     raw
+- default:     raw
 
 **[-t]:**
 
-  usage:       -t (1s | 500ms)
+- usage:       -t (1s | 500ms)
 
-  description: Network timeout: higher value means better accuracy on slow links.
+- description: Network timeout: higher value means better accuracy on slow links.
 
-  default:     1s
+- default:     1s
 
 **Port Selection:**
 
