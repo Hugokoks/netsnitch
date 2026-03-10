@@ -56,9 +56,7 @@ the core framework logic.
 
 ## Scan Usage
 
--ARP Scan:
-
-Usage: arp <target> [flags]
+- ARP Scan:
 
 Example: 
 ```bash 
@@ -67,9 +65,7 @@ sudo ./netsnitch arp 192.168.1.0/24 -t 500ms
 
 Flags: -r,-t
 
--TCP Port Scan:
-
-Usage:  tcp <target> [flags]
+- TCP Port Scan:
 
 Example:
 ```bash
@@ -78,9 +74,7 @@ sudo ./netsnitch tcp 192.168.1.1 -p 1-1024 -m s -o
 
 Flags: -m, -o, -p, -r, -t
 
--UDP Port Scan
-
-Usage: udp <target> [flags]
+- UDP Port Scan
 
 Example: 
 ```bash
@@ -98,29 +92,29 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 ------
 
 ## Flags Usage
--h:
+- -h:
   usage:       -h
   description: Show help and exit.
 
--m:
+- -m:
   usage:       -m (f | s)
   description: Scan strategy: 'f' for full handshake, 's' for stealth SYN.
 
--o:
+- -o:
   usage:       -o
   description: Show only active/open ports; hide everything else.
   default:     show all
 
--p:
+- -p:
   usage:       -p (1-100 | 80,443)
   description: Target ports: supports ranges, lists, or single ports.
 
--r:
+- -r:
   usage:       -r (raw | json)
   description: Output format: table rows or machine-readable JSON.
   default:     raw
 
--t:
+- -t:
   usage:       -t (1s | 500ms)
   description: Network timeout: higher value means better accuracy on slow links.
   default:     1s
