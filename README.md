@@ -9,8 +9,6 @@
 Netsnitch uses a scheduler and worker pool architecture to execute scan
 tasks concurrently and identify services using a fingerprint engine.
 
-----
-
 ## 🚀 Features
 
 - **Concurrent scanning engine using goroutines**
@@ -19,7 +17,6 @@ tasks concurrently and identify services using a fingerprint engine.
 - **Service fingerprinting based on probes and pattern matching**
 - **Configurable scanning via CLI flags**
 - **Designed for extensibility and future AI analysis**
-----
 
 ## 🔎 Supported Scan Types
   
@@ -28,15 +25,12 @@ tasks concurrently and identify services using a fingerprint engine.
 - UDP port scanning
 - More scan modules coming soon
 
-----
-
 ## ⚙️  Installation
 ```bash
 git clone https://github.com/Hugokoks/netsnitch
 cd netsnitch
 go build -o netsnitch ./cmd/netsnitch
 ```
-----
 
 ## 🧩 Extending the Framework
 
@@ -52,8 +46,6 @@ method.
 
 This design allows new scan implementations to be added without modifying
 the core framework logic.
-
-------
 
 ## 💻 Scan Usage
 
@@ -89,8 +81,6 @@ sudo ./netsnitch udp 192.168.1.1 -p 53,161 -t 500ms
 ```bash
 sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 ```
-
-------
 
 ## 💻 Flags Usage
 
@@ -153,8 +143,6 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 - -t 200ms    
 - -t 2s       
 - -t 1m       
-
-------
 
 ## 🏁 Roadmap
 
