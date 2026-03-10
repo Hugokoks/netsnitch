@@ -56,34 +56,34 @@ the core framework logic.
 
 ## Scan Usage
 
-- ARP Scan:
+**ARP Scan:**
 
-Example: 
+- Example: 
 ```bash 
 sudo ./netsnitch arp 192.168.1.0/24 -t 500ms
 ```
 
-Available Flags: -r,-t
+- Available Flags: -r,-t
 
-- TCP Port Scan:
+**TCP Port Scan:**
 
-Example:
+- Example:
 ```bash
 sudo ./netsnitch tcp 192.168.1.1 -p 1-1024 -m s -o
 ```
 
-Available Flags: -m, -o, -p, -r, -t
+- Available Flags: -m, -o, -p, -r, -t
 
-- UDP Port Scan
+**UDP Port Scan**
 
-Example: 
+- Example: 
 ```bash
 sudo ./netsnitch udp 192.168.1.1 -p 53,161 -t 500ms
 ```
 
-Available Flags: -p, -r, -t
+- Available Flags: -p, -r, -t
 
--Parallel Scans:
+**Parallel Scans:**
 
 ```bash
 sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
