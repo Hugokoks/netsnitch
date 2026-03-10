@@ -3,7 +3,9 @@ package discovery
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net"
+	"time"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
@@ -25,6 +27,14 @@ func (a *ARPDiscoverer) sendARPRequest(ctx context.Context, handle *ARPHandle, i
 				a.stats.Errors.Add(1)
 			} else {
 				a.stats.Sent.Add(1)
+			}
+			// send timeout
+			delay := time.Duration(rand.Intn(30)+10) * time.Millisecond
+
+			select {
+			case <-ctx.Done():
+				return
+			case <-time.After(delay):
 			}
 		}
 	}

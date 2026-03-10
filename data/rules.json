@@ -86,7 +86,7 @@
     },
     "match": {
       "type": "regex",
-      "pattern": "(?i)^220[ -].*(vsftpd|proftpd|filezilla server)?/?([^\\s\\r\\n]*)?"
+      "pattern": "(?i)(vsftpd|proftpd|filezilla server)\\s+([0-9.]+)"
     },
     "extract": {
       "product": 1,
@@ -143,43 +143,6 @@
     },
     "extract": {
       "version": 1
-    }
-  },
-  {
-    "id": "rpcbind_banner",
-    "service": "rpcbind",
-    "ports": [
-      111
-    ],
-    "confidence": 0.85,
-    "when": {
-      "type": "contains",
-      "pattern": "rpc"
-    }
-  },
-  {
-    "id": "distccd_banner",
-    "service": "distccd",
-    "ports": [
-      3632
-    ],
-    "confidence": 0.90,
-    "when": {
-      "type": "contains",
-      "pattern": "distccd"
-    }
-  },
-  {
-    "id": "smb_sig",
-    "service": "smb",
-    "ports": [
-      445,
-      139
-    ],
-    "confidence": 0.98,
-    "when": {
-      "type": "hex",
-      "pattern": "ff534d42"
     }
   },
   {
