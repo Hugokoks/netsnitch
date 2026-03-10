@@ -113,7 +113,7 @@ sudo ./netsnitch arp 192.168.0.0/24 -t 1s "&&" tcp 192.168.0.1 -p 1-100
 
   default:     show all
 
-- -p:
+[-p]:
 
   usage:       -p (1-100 | 80,443)
 
