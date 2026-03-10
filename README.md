@@ -16,22 +16,6 @@ and identify services using a fingerprint engine.
 - Designed for extensibility and future AI analysis
 ----
 
-## Architecture
-
-CLI
- ↓
-Task Builders
- ↓
-Scheduler
- ↓
-Worker Pool
- ↓
-Scan Tasks
- ↓
-Fingerprint Engine
- ↓
-Results
-
 ## Supported Scan Types
   
 - ARP-based host discovery
@@ -73,9 +57,11 @@ the core framework logic.
 
 [ARP Scan]:
 Usage: arp <target> [flags]
-Example: ```bash
-sudo ./netsnitch arp 192.168.1.0/24 -t 500ms 
+Example: 
+```bash 
+sudo ./netsnitch arp 192.168.1.0/24 -t 500ms
 ```
+
 Flags: -r,-t
 
 [TCP Port Scan]:
