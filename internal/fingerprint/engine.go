@@ -1,7 +1,6 @@
 package fingerprint
 
 import (
-	"os"
 	"path/filepath"
 )
 
@@ -20,12 +19,8 @@ func NewEngine() *Engine {
 }
 
 func InitFPEngine() (*Engine, error) {
-
-	exePath, _ := os.Executable()
-	exeDir := filepath.Dir(exePath)
-
-	rulesPath := filepath.Join(exeDir, "data", "rules.json")
-	probesPath := filepath.Join(exeDir, "data", "probes.json")
+	rulesPath := filepath.Join("data", "rules.json")
+	probesPath := filepath.Join("data", "probes.json")
 
 	fp := NewEngine()
 

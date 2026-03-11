@@ -14,6 +14,13 @@
     "weight": 20
   },
   {
+  "id": "dns_query_example",
+  "name": "DNS query example.com A",
+  "payload_b64": "AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=",
+  "ports": [53],
+  "weight": 100
+},
+  {
     "id": "http_options",
     "name": "HTTP OPTIONS",
     "payload": "OPTIONS / HTTP/1.0\r\nHost: x\r\n\r\n",

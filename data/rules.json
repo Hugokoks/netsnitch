@@ -285,5 +285,15 @@
       "type": "contains",
       "pattern": "shell"
     }
+  },
+  {
+  "id": "dns_response",
+  "service": "dns",
+  "ports": [53],
+  "confidence": 0.95,
+  "when": {
+    "type": "hex",
+    "pattern": "8180"
   }
+}
 ]
