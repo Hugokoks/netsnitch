@@ -1,7 +1,6 @@
 # Netsnitch
 
 ![Go](https://img.shields.io/badge/Go-1.22-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active-orange)
 
 **A modular high-performance network scanner built with Go.**
