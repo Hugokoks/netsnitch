@@ -21,8 +21,8 @@ func (e *Engine) LoadProbes(path string) error {
 	}
 
 	// Reset
-	e.ProbesByPort = make(map[int][]Probe)
-	e.GenericProbes = nil
+	//e.ProbesByPort = make(map[int][]Probe)
+	//e.GenericProbes = nil
 
 	for i := range probes {
 		p := probes[i]

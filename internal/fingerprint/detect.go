@@ -13,32 +13,15 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 	var best *ServiceInfo
 	bestScore := -1
 
-	// 1. Port-specific rules
-	for _, r := range e.portRules {
-		if !containsPort(r.Ports, port) {
-			continue
-		}
+	candidates := e.candidateRules(port, raw)
 
+	for _, r := range candidates {
 		info := e.checkMatch(r, raw)
 		if info == nil {
 			continue
 		}
 
-		score := scoreMatch(info, true)
-		if score > bestScore {
-			best = info
-			bestScore = score
-		}
-	}
-
-	// 2. Generic rules
-	for _, r := range e.genericRules {
-		info := e.checkMatch(r, raw)
-		if info == nil {
-			continue
-		}
-
-		score := scoreMatch(info, false)
+		score := scoreMatch(info, containsPort(r.Ports, port))
 		if score > bestScore {
 			best = info
 			bestScore = score
@@ -48,7 +31,6 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 	return best
 }
 func (e *Engine) checkMatch(r *Rule, raw string) *ServiceInfo {
-	///guards
 	if r == nil || r.When == nil {
 		return nil
 	}
@@ -67,6 +49,11 @@ func (e *Engine) checkMatch(r *Rule, raw string) *ServiceInfo {
 	case "hex":
 		if len(r.whenHex) > 0 {
 			matched = bytes.Contains(rawBytes, r.whenHex)
+		}
+
+	case "regex":
+		if r.whenRe != nil {
+			matched = r.whenRe.MatchString(raw)
 		}
 	}
 
@@ -109,7 +96,6 @@ func (e *Engine) checkMatch(r *Rule, raw string) *ServiceInfo {
 
 	return nil
 }
-
 func containsPort(ports []int, port int) bool {
 	for _, p := range ports {
 		if p == port {
@@ -138,4 +124,69 @@ func scoreMatch(info *ServiceInfo, portSpecific bool) int {
 	}
 
 	return score
+}
+
+func (e *Engine) candidateRules(port int, raw string) []*Rule {
+	var out []*Rule
+	seen := make(map[*Rule]struct{})
+
+	rawLower := strings.ToLower(raw)
+	rawBytes := []byte(raw)
+
+	addRules := func(rules []*Rule) {
+		for _, r := range rules {
+			if r == nil {
+				continue
+			}
+
+			// port filter
+			if len(r.Ports) > 0 && !containsPort(r.Ports, port) {
+				continue
+			}
+
+			if _, ok := seen[r]; ok {
+				continue
+			}
+
+			seen[r] = struct{}{}
+			out = append(out, r)
+		}
+	}
+
+	// prefix indexed rules
+	for prefix, rules := range e.prefixIndex {
+		if strings.HasPrefix(raw, prefix) {
+			addRules(rules)
+		}
+	}
+
+	// contains indexed rules
+	for needle, rules := range e.containsIndex {
+		if strings.Contains(rawLower, needle) {
+			addRules(rules)
+		}
+	}
+
+	// hex indexed rules
+	for _, rules := range e.hexIndex {
+		if len(rules) == 0 {
+			continue
+		}
+
+		// všechny rules pod stejným klíčem mají stejný pattern,
+		// takže stačí checknout první
+		first := rules[0]
+		if first == nil || len(first.whenHex) == 0 {
+			continue
+		}
+
+		if bytes.Contains(rawBytes, first.whenHex) {
+			addRules(rules)
+		}
+	}
+
+	// regex when rules nejdou dobře indexovat, tak jako fallback
+	addRules(e.regexRules)
+
+	return out
 }

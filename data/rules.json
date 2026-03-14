@@ -1,6 +1,6 @@
 [
   {
-    "id": "ssh_banner",
+    "id": "ssh_openssh",
     "service": "ssh",
     "product": "OpenSSH",
     "ports": [
@@ -13,53 +13,126 @@
     },
     "match": {
       "type": "regex",
-      "pattern": "^SSH-\\d\\.\\d-OpenSSH_([^\\s]+)"
+      "pattern": "^SSH-\\d\\.\\d-OpenSSH[_-]([^\\s]+)"
     },
     "extract": {
       "version": 1
     }
   },
   {
-    "id": "http_status",
-    "service": "http",
+    "id": "ssh_generic",
+    "service": "ssh",
     "ports": [
-      80,
-      8080,
-      8000
+      22
     ],
     "confidence": 0.95,
     "when": {
       "type": "prefix",
-      "pattern": "HTTP/"
+      "pattern": "SSH-"
     }
   },
   {
-    "id": "http_apache_server",
+    "id": "http_apache",
     "service": "http",
     "product": "Apache",
     "ports": [
       80,
       8080,
-      8000
+      8000,
+      8008,
+      8081,
+      8888
     ],
-    "confidence": 0.90,
+    "confidence": 0.97,
     "when": {
       "type": "contains",
-      "pattern": "server:"
+      "pattern": "server: apache"
     },
     "match": {
       "type": "regex",
-      "pattern": "(?im)^Server:\\s*Apache/([^\\s\\r\\n]+)"
+      "pattern": "(?im)^Server:\\s*Apache/?([^\\s\\r\\n]*)"
     },
     "extract": {
       "version": 1
     }
   },
   {
-    "id": "http_generic",
+    "id": "http_nginx",
+    "service": "http",
+    "product": "nginx",
+    "ports": [
+      80,
+      8080,
+      8000,
+      8008,
+      8081,
+      8888
+    ],
+    "confidence": 0.97,
+    "when": {
+      "type": "contains",
+      "pattern": "server: nginx"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?im)^Server:\\s*nginx/?([^\\s\\r\\n]*)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "http_iis",
+    "service": "http",
+    "product": "Microsoft-IIS",
+    "ports": [
+      80,
+      8080,
+      8000,
+      8008,
+      8081,
+      8888
+    ],
+    "confidence": 0.97,
+    "when": {
+      "type": "contains",
+      "pattern": "server: microsoft-iis"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?im)^Server:\\s*Microsoft-IIS/?([^\\s\\r\\n]*)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "http_caddy",
+    "service": "http",
+    "product": "Caddy",
+    "ports": [
+      80,
+      8080,
+      8000,
+      8008,
+      8081,
+      8888
+    ],
+    "confidence": 0.96,
+    "when": {
+      "type": "contains",
+      "pattern": "server: caddy"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?im)^Server:\\s*Caddy"
+    }
+  },
+  {
+    "id": "http_generic_response",
     "service": "http",
     "ports": [],
-    "confidence": 0.8,
+    "confidence": 0.90,
     "when": {
       "type": "prefix",
       "pattern": "HTTP/"
@@ -73,93 +146,80 @@
     }
   },
   {
-    "id": "ftp_banner",
+    "id": "ftp_vsftpd",
     "service": "ftp",
+    "product": "vsFTPd",
     "ports": [
       21,
       2121
     ],
-    "confidence": 0.95,
-    "when": {
-      "type": "prefix",
-      "pattern": "220"
-    },
-    "match": {
-      "type": "regex",
-      "pattern": "(?i)(vsftpd|proftpd|filezilla server)\\s+([0-9.]+)"
-    },
-    "extract": {
-      "product": 1,
-      "version": 2
-    }
-  },
-  {
-    "id": "smtp_banner",
-    "service": "smtp",
-    "ports": [
-      25,
-      587,
-      2525
-    ],
-    "confidence": 0.95,
-    "when": {
-      "type": "prefix",
-      "pattern": "220"
-    },
-    "match": {
-      "type": "regex",
-      "pattern": "(?i)^220[ -].*(ESMTP|SMTP|Postfix|Exim|Sendmail)"
-    },
-    "extract": {
-      "product": 1
-    }
-  },
-  {
-    "id": "telnet_iac",
-    "service": "telnet",
-    "ports": [
-      23
-    ],
-    "confidence": 0.93,
-    "when": {
-      "type": "hex",
-      "pattern": "fffd"
-    }
-  },
-  {
-    "id": "mysql_handshake",
-    "service": "mysql",
-    "ports": [
-      3306
-    ],
-    "confidence": 0.96,
+    "confidence": 0.98,
     "when": {
       "type": "contains",
-      "pattern": "mysql"
+      "pattern": "vsftpd"
     },
     "match": {
       "type": "regex",
-      "pattern": "(?i)mysql[^\\d]*([0-9]+(?:\\.[0-9]+)+)"
+      "pattern": "(?i)vsftpd\\s+([0-9.]+)"
     },
     "extract": {
       "version": 1
     }
   },
   {
-    "id": "bind_shell_prompt",
-    "service": "shell",
-    "product": "bind shell",
+    "id": "ftp_proftpd",
+    "service": "ftp",
+    "product": "ProFTPD",
     "ports": [
-      1524
+      21,
+      2121
     ],
-    "confidence": 0.99,
+    "confidence": 0.98,
     "when": {
       "type": "contains",
-      "pattern": "root@"
+      "pattern": "proftpd"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)proftpd\\s+([0-9.]+)"
+    },
+    "extract": {
+      "version": 1
     }
   },
   {
-    "id": "smtp_postfix_banner",
+    "id": "ftp_filezilla",
+    "service": "ftp",
+    "product": "FileZilla Server",
+    "ports": [
+      21,
+      2121
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "filezilla server"
+    }
+  },
+  {
+    "id": "ftp_generic",
+    "service": "ftp",
+    "ports": [
+      21,
+      2121
+    ],
+    "confidence": 0.90,
+    "when": {
+      "type": "prefix",
+      "pattern": "220"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)^220.*ftp"
+    }
+  },
+  {
+    "id": "smtp_postfix",
     "service": "smtp",
     "product": "Postfix",
     "ports": [
@@ -170,130 +230,314 @@
     "confidence": 0.98,
     "when": {
       "type": "contains",
-      "pattern": "esmtp"
-    },
-    "match": {
-      "type": "regex",
-      "pattern": "(?i)ESMTP\\s+Postfix"
+      "pattern": "postfix"
     }
   },
   {
-    "id": "mysql_blocked_host",
-    "service": "mysql",
+    "id": "smtp_exim",
+    "service": "smtp",
+    "product": "Exim",
     "ports": [
-      3306
-    ],
-    "confidence": 0.95,
-    "when": {
-      "type": "contains",
-      "pattern": "mysqladmin flush-hosts"
-    }
-  },
-  {
-    "id": "distccd_banner",
-    "service": "distccd",
-    "ports": [
-      3632
-    ],
-    "confidence": 0.95,
-    "when": {
-      "type": "contains",
-      "pattern": "distccd"
-    }
-  },
-  {
-    "id": "java_rmi_banner",
-    "service": "java-rmi",
-    "ports": [
-      1099
-    ],
-    "confidence": 0.95,
-    "when": {
-      "type": "contains",
-      "pattern": "rmi"
-    }
-  },
-  {
-    "id": "dns_banner",
-    "service": "dns",
-    "ports": [
-      53
-    ],
-    "confidence": 0.9,
-    "when": {
-      "type": "contains",
-      "pattern": "bind"
-    }
-  },
-  {
-    "id": "rpcbind_banner",
-    "service": "rpcbind",
-    "ports": [
-      111
-    ],
-    "confidence": 0.9,
-    "when": {
-      "type": "contains",
-      "pattern": "rpc"
-    }
-  },
-  {
-    "id": "nfs_banner",
-    "service": "nfs",
-    "ports": [
-      2049
-    ],
-    "confidence": 0.9,
-    "when": {
-      "type": "contains",
-      "pattern": "nfs"
-    }
-  },
-  {
-    "id": "smb_signature",
-    "service": "smb",
-    "ports": [
-      139,
-      445
+      25,
+      587,
+      2525
     ],
     "confidence": 0.98,
     "when": {
-      "type": "hex",
-      "pattern": "ff534d42"
+      "type": "contains",
+      "pattern": "exim"
     }
   },
   {
-    "id": "rlogin_shell",
-    "service": "rlogin",
+    "id": "smtp_sendmail",
+    "service": "smtp",
+    "product": "Sendmail",
     "ports": [
-      513
+      25,
+      587,
+      2525
     ],
-    "confidence": 0.9,
+    "confidence": 0.97,
     "when": {
       "type": "contains",
-      "pattern": "login"
+      "pattern": "sendmail"
     }
   },
   {
-    "id": "rexec_shell",
-    "service": "rexec",
+    "id": "smtp_generic",
+    "service": "smtp",
     "ports": [
-      512
+      25,
+      587,
+      2525
     ],
-    "confidence": 0.9,
+    "confidence": 0.92,
+    "when": {
+      "type": "prefix",
+      "pattern": "220"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)^220[ -].*(smtp|esmtp)"
+    }
+  },
+  {
+    "id": "pop3_dovecot",
+    "service": "pop3",
+    "product": "Dovecot",
+    "ports": [
+      110
+    ],
+    "confidence": 0.98,
     "when": {
       "type": "contains",
-      "pattern": "shell"
+      "pattern": "dovecot"
     }
   },
   {
-  "id": "dns_response",
-  "service": "dns",
-  "ports": [53],
-  "confidence": 0.95,
-  "when": {
-    "type": "hex",
-    "pattern": "8180"
+    "id": "pop3_generic",
+    "service": "pop3",
+    "ports": [
+      110
+    ],
+    "confidence": 0.93,
+    "when": {
+      "type": "prefix",
+      "pattern": "+OK"
+    }
+  },
+  {
+    "id": "imap_dovecot",
+    "service": "imap",
+    "product": "Dovecot",
+    "ports": [
+      143
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "dovecot"
+    }
+  },
+  {
+    "id": "imap_generic",
+    "service": "imap",
+    "ports": [
+      143
+    ],
+    "confidence": 0.93,
+    "when": {
+      "type": "contains",
+      "pattern": "imap"
+    }
+  },
+  {
+    "id": "redis_pong",
+    "service": "redis",
+    "ports": [
+      6379
+    ],
+    "confidence": 0.99,
+    "when": {
+      "type": "prefix",
+      "pattern": "+PONG"
+    }
+  },
+  {
+    "id": "redis_error",
+    "service": "redis",
+    "ports": [
+      6379
+    ],
+    "confidence": 0.96,
+    "when": {
+      "type": "prefix",
+      "pattern": "-ERR"
+    }
+  },
+  {
+    "id": "redis_info",
+    "service": "redis",
+    "product": "Redis",
+    "ports": [
+      6379
+    ],
+    "confidence": 0.99,
+    "when": {
+      "type": "contains",
+      "pattern": "redis_version:"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?im)^redis_version:([^\\r\\n]+)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "memcached_stats",
+    "service": "memcached",
+    "ports": [
+      11211
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "stat pid"
+    }
+  },
+  {
+    "id": "memcached_version",
+    "service": "memcached",
+    "product": "Memcached",
+    "ports": [
+      11211
+    ],
+    "confidence": 0.99,
+    "when": {
+      "type": "prefix",
+      "pattern": "VERSION"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "^VERSION\\s+([^\\r\\n]+)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "vnc_rfb",
+    "service": "vnc",
+    "ports": [
+      5900,
+      5901,
+      5902
+    ],
+    "confidence": 0.99,
+    "when": {
+      "type": "prefix",
+      "pattern": "RFB "
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "^RFB\\s+(\\d{3}\\.\\d{3})"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "rtsp_generic",
+    "service": "rtsp",
+    "ports": [
+      554,
+      8554
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "prefix",
+      "pattern": "RTSP/"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "^RTSP/(\\d\\.\\d)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "sip_generic",
+    "service": "sip",
+    "ports": [
+      5060,
+      5061
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "sip/2.0"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "(?i)SIP/(2\\.0)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "rsync_banner",
+    "service": "rsync",
+    "ports": [
+      873
+    ],
+    "confidence": 0.99,
+    "when": {
+      "type": "prefix",
+      "pattern": "@RSYNCD:"
+    },
+    "match": {
+      "type": "regex",
+      "pattern": "^@RSYNCD:\\s*(\\d+(?:\\.\\d+)*)"
+    },
+    "extract": {
+      "version": 1
+    }
+  },
+  {
+    "id": "couchdb_http",
+    "service": "couchdb",
+    "product": "CouchDB",
+    "ports": [
+      5984
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "couchdb"
+    }
+  },
+  {
+    "id": "elasticsearch_http",
+    "service": "elasticsearch",
+    "product": "Elasticsearch",
+    "ports": [
+      9200
+    ],
+    "confidence": 0.97,
+    "when": {
+      "type": "contains",
+      "pattern": "\"cluster_name\""
+    }
+  },
+  {
+    "id": "docker_api",
+    "service": "docker",
+    "product": "Docker API",
+    "ports": [
+      2375,
+      2376
+    ],
+    "confidence": 0.98,
+    "when": {
+      "type": "contains",
+      "pattern": "\"apiversion\""
+    }
+  },
+  {
+    "id": "kubernetes_api",
+    "service": "kubernetes",
+    "product": "Kubernetes API",
+    "ports": [
+      6443
+    ],
+    "confidence": 0.97,
+    "when": {
+      "type": "contains",
+      "pattern": "\"gitversion\""
+    }
   }
-}
 ]

@@ -24,6 +24,7 @@ type Rule struct {
 
 	re      *regexp.Regexp `json:"-"`
 	whenHex []byte         `json:"-"`
+	whenRe  *regexp.Regexp
 }
 
 type When struct {

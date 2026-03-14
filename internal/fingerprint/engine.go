@@ -10,10 +10,24 @@ type Engine struct {
 
 	portRules    []*Rule
 	genericRules []*Rule
+
+	prefixIndex   map[string][]*Rule
+	containsIndex map[string][]*Rule
+	hexIndex      map[string][]*Rule
+	regexRules    []*Rule
 }
 
 func NewEngine() *Engine {
-	e := &Engine{}
+	e := &Engine{
+		ProbesByPort:  make(map[int][]Probe),
+		GenericProbes: []Probe{},
+		portRules:     []*Rule{},
+		genericRules:  []*Rule{},
+		prefixIndex:   make(map[string][]*Rule),
+		containsIndex: make(map[string][]*Rule),
+		hexIndex:      make(map[string][]*Rule),
+		regexRules:    []*Rule{},
+	}
 
 	return e
 }

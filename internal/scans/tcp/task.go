@@ -40,6 +40,18 @@ type StealthTask struct {
 
 func (t *StealthTask) Execute(ctx context.Context, out chan<- domain.Result) error {
 	res := t.mgr.Scan(ctx, t.ip, t.port, t.timeout)
+
+	// Fingerprint only confirmed open ports
+	if res.Open && t.fp != nil {
+		info := t.fp.Identify(ctx, t.ip, t.port, t.timeout)
+		if info != nil {
+			res.Service = info.Service
+			res.Banner = info.Banner
+			res.Version = info.Version
+			res.Product = info.Product
+		}
+	}
+
 	return t.sendResult(ctx, res, out)
 }
 
@@ -48,6 +60,18 @@ type FullTask struct {
 }
 
 func (t *FullTask) Execute(ctx context.Context, out chan<- domain.Result) error {
-	res := tcp_full.Scan(ctx, t.fp, t.ip, t.port, t.timeout)
+	res := tcp_full.Scan(ctx, t.ip, t.port, t.timeout)
+
+	if res.Open && t.fp != nil {
+
+		info := t.fp.Identify(ctx, t.ip, t.port, t.timeout)
+		if info != nil {
+			res.Service = info.Service
+			res.Banner = info.Banner
+			res.Version = info.Version
+			res.Product = info.Product
+		}
+	}
+
 	return t.sendResult(ctx, res, out)
 }

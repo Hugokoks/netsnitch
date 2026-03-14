@@ -19,5 +19,7 @@ type Result struct {
 
 	Banner  string
 	Service string
+	Version string
+	Product string
 	Error   error
 }
