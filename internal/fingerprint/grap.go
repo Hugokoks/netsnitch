@@ -2,6 +2,7 @@ package fingerprint
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"time"
 )
@@ -11,10 +12,9 @@ func grabWithContext(
 	conn net.Conn,
 	timeout time.Duration,
 ) string {
-
 	buf := make([]byte, 4096)
 
-	conn.SetReadDeadline(time.Now().Add(timeout))
+	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 
 	type result struct {
 		n   int
@@ -29,14 +29,13 @@ func grabWithContext(
 	}()
 
 	select {
-
 	case <-ctx.Done():
-		conn.Close()
+		_ = conn.Close()
 		return ""
 
 	case res := <-ch:
-
 		if res.err != nil || res.n == 0 {
+			fmt.Printf("[grab] read err=%v n=%d\n", res.err, res.n)
 			return ""
 		}
 

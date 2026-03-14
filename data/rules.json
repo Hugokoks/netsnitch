@@ -539,5 +539,225 @@
       "type": "contains",
       "pattern": "\"gitversion\""
     }
+  },
+  {
+  "id": "mysql_bad_handshake",
+  "service": "mysql",
+  "product": "MySQL",
+  "ports": [3306],
+  "confidence": 0.97,
+  "when": {
+    "type": "contains",
+    "pattern": "mysqladmin flush-hosts"
   }
+}
+,
+{
+  "id": "irc_throttled",
+  "service": "irc",
+  "ports": [6667, 6697],
+  "confidence": 0.97,
+  "when": {
+    "type": "contains",
+    "pattern": "throttled: reconnecting too fast"
+  }
+}
+,
+{
+  "id": "ruby_drb_error",
+  "service": "druby",
+  "product": "Ruby DRb",
+  "ports": [8787],
+  "confidence": 0.98,
+  "when": {
+    "type": "contains",
+    "pattern": "drbconnerror"
+  }
+},
+{
+  "id": "http_apache_coyote",
+  "service": "http",
+  "product": "Apache-Coyote",
+  "ports": [8180, 8080],
+  "confidence": 0.98,
+  "when": {
+    "type": "contains",
+    "pattern": "server: apache-coyote"
+  },
+  "match": {
+    "type": "regex",
+    "pattern": "(?im)^Server:\\s*Apache-Coyote/([^\\s\\r\\n]+)"
+  },
+  "extract": {
+    "version": 1
+  }
+},
+{
+  "id": "mysql_handshake_version",
+  "service": "mysql",
+  "product": "MySQL",
+  "ports": [3306],
+  "confidence": 0.99,
+  "when": {
+    "type": "contains",
+    "pattern": "mysql"
+  },
+  "match": {
+    "type": "regex",
+    "pattern": "([0-9]+(?:\\.[0-9a-zA-Z_-]+)+)"
+  },
+  "extract": {
+    "version": 1
+  }
+},
+{
+  "id": "telnet_iac",
+  "service": "telnet",
+  "product": "Telnet",
+  "ports": [23],
+  "confidence": 0.98,
+  "when": {
+    "type": "hex",
+    "pattern": "fffd"
+  }
+},
+{
+  "id": "bind_shell_prompt",
+  "service": "shell",
+  "product": "bind shell",
+  "ports": [1524],
+  "confidence": 0.99,
+  "when": {
+    "type": "contains",
+    "pattern": "root@"
+  }
+},
+{
+  "id": "bind_shell_prompt_hash",
+  "service": "shell",
+  "product": "bind shell",
+  "ports": [1524],
+  "confidence": 0.98,
+  "when": {
+    "type": "contains",
+    "pattern": ":/#"
+  }
+},
+{
+  "id": "irc_notice_auth",
+  "service": "irc",
+  "product": "IRC",
+  "ports": [6667, 6697],
+  "confidence": 0.97,
+  "when": {
+    "type": "contains",
+    "pattern": "notice auth"
+  }
+},
+{
+  "id": "irc_closing_link",
+  "service": "irc",
+  "product": "IRC",
+  "ports": [6667, 6697],
+  "confidence": 0.96,
+  "when": {
+    "type": "contains",
+    "pattern": "closing link"
+  }
+},
+{
+  "id": "irc_too_many_unknown",
+  "service": "irc",
+  "product": "IRC",
+  "ports": [6667, 6697],
+  "confidence": 0.98,
+  "when": {
+    "type": "contains",
+    "pattern": "too many unknown connections from your ip"
+  }
+},
+{
+  "id": "postgres_ssl_supported",
+  "service": "postgresql",
+  "product": "PostgreSQL",
+  "ports": [5432],
+  "confidence": 0.99,
+  "when": {
+    "type": "prefix",
+    "pattern": "S"
+  }
+},
+{
+  "id": "postgres_ssl_not_supported",
+  "service": "postgresql",
+  "product": "PostgreSQL",
+  "ports": [5432],
+  "confidence": 0.98,
+  "when": {
+    "type": "prefix",
+    "pattern": "N"
+  }
+},
+{
+  "id": "postgres_ssl_supported",
+  "service": "postgresql",
+  "product": "PostgreSQL",
+  "ports": [],
+  "confidence": 0.99,
+  "when": {
+    "type": "prefix",
+    "pattern": "S"
+  }
+},
+{
+  "id": "postgres_ssl_not_supported",
+  "service": "postgresql",
+  "product": "PostgreSQL",
+  "ports": [],
+  "confidence": 0.98,
+  "when": {
+    "type": "prefix",
+    "pattern": "N"
+  }
+},
+{
+  "id": "dns_tcp_response",
+  "service": "dns",
+  "product": "DNS",
+  "ports": [53],
+  "confidence": 0.95,
+  "when": {
+    "type": "hex",
+    "pattern": "8180"
+  }
+},
+{
+  "id": "smb1_signature",
+  "service": "smb",
+  "product": "SMB",
+  "ports": [139, 445],
+  "confidence": 0.99,
+  "when": {
+    "type": "hex",
+    "pattern": "ff534d42"
+  }
+},
+{
+  "id": "smb2_signature",
+  "service": "smb",
+  "product": "SMB2",
+  "ports": [445],
+  "confidence": 0.99,
+  "when": {
+    "type": "hex",
+    "pattern": "fe534d42"
+  },
+    "extract": {
+      "version": 1
+    }
+  
+}
+
+
+
 ]

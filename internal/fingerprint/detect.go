@@ -2,6 +2,7 @@ package fingerprint
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 )
 
@@ -14,8 +15,10 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 	bestScore := -1
 
 	candidates := e.candidateRules(port, raw)
-
+	fmt.Printf("[detect] port=%d candidates=%d raw=%q\n", port, len(candidates), raw)
 	for _, r := range candidates {
+		fmt.Printf("[detect] try rule=%s service=%s when=%s pattern=%q\n",
+			r.ID, r.Service, r.When.Type, r.When.Pattern)
 		info := e.checkMatch(r, raw)
 		if info == nil {
 			continue
@@ -26,6 +29,9 @@ func (e *Engine) Detect(port int, raw string) *ServiceInfo {
 			best = info
 			bestScore = score
 		}
+	}
+	if best == nil {
+		fmt.Printf("[detect] miss port=%d raw=%q\n", port, raw)
 	}
 
 	return best

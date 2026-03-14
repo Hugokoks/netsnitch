@@ -14,13 +14,6 @@
     "weight": 20
   },
   {
-  "id": "dns_query_example",
-  "name": "DNS query example.com A",
-  "payload_b64": "AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=",
-  "ports": [53],
-  "weight": 100
-},
-  {
     "id": "http_options",
     "name": "HTTP OPTIONS",
     "payload": "OPTIONS / HTTP/1.0\r\nHost: x\r\n\r\n",
@@ -302,12 +295,34 @@
     "ports": [3389],
     "weight": 100
   },
-
   {
-    "id": "smb2_negotiate",
-    "name": "SMB2 negotiate",
-    "payload_b64": "AAABAAEAAAD/////AAAAAA==",
-    "ports": [445],
-    "weight": 100
-  }
+  "id": "postgres_ssl_request",
+  "name": "PostgreSQL SSLRequest",
+  "payload_b64": "AAAACATSFi8=",
+  "ports": [5432],
+  "weight": 120
+},
+{
+  "id": "postgres_null_probe",
+  "name": "PostgreSQL null probe",
+  "payload": "",
+  "ports": [5432],
+  "weight": 50
+},
+
+{
+  "id": "dns_tcp_query_example",
+  "name": "DNS over TCP query example.com A",
+  "payload_b64": "AB0AAAEAAAEAAAAAAAAHZXhhbXBsZQNjb20AAAEAAQ==",
+  "ports": [53],
+  "weight": 120
+},
+{
+  "id": "smb1_negotiate",
+  "name": "SMB1 Negotiate Protocol Request",
+  "payload_b64": "AAAAWv9TTUIAAAAAAAAAAAAAAAAAAAAAAAABAAAAJgAAAgBQQwBORVRXT1JLIFBST0dSQU0gMS4wAAICTEFOTUFOMS4wAAICTFhNMUIuWDAwMgACTk9UIFJFQUxMWSBBIERJQUxFQ1QAAAJOVCBMTSAwLjEyAAA=",
+  "ports": [445],
+  "weight": 120
+}
+
 ]

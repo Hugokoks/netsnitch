@@ -48,10 +48,12 @@ func (e *Engine) IdentifyWithConn(
 
 	if raw != "" {
 		lastResp = raw
-
+		fmt.Printf("[fp-passive] port=%d raw=%q\n", port, raw)
 		if info := e.Detect(port, raw); info != nil {
+			fmt.Printf("[fp-hit-passive] port=%d service=%s rule=%s\n", port, info.Service, info.RuleID)
 			return info
 		}
+		fmt.Printf("[fp-miss-passive] port=%d raw=%q\n", port, raw)
 	}
 
 	// Phase 2: active probes
@@ -64,10 +66,11 @@ func (e *Engine) IdentifyWithConn(
 			return nil
 		default:
 		}
-
+		fmt.Printf("[fp-probe-start] port=%d probe=%s payload_len=%d\n", port, p.ID, len(p.Raw))
 		d := net.Dialer{Timeout: timeout}
 		conn, err := d.DialContext(ctx, "tcp", address)
 		if err != nil {
+			fmt.Printf("[fp-probe-dial-fail] port=%d probe=%s err=%v\n", port, p.ID, err)
 			continue
 		}
 
@@ -76,14 +79,16 @@ func (e *Engine) IdentifyWithConn(
 
 		if len(p.Raw) > 0 {
 			if _, err := conn.Write(p.Raw); err != nil {
+				fmt.Printf("[fp-probe-write-fail] port=%d probe=%s err=%v\n", port, p.ID, err)
 				_ = conn.Close()
 				continue
 			}
+			fmt.Printf("[fp-probe-write-ok] port=%d probe=%s\n", port, p.ID)
 		}
 
 		resp := grabWithContext(ctx, conn, timeout)
 		_ = conn.Close()
-
+		fmt.Printf("[fp-probe-resp] port=%d probe=%s resp_len=%d resp=%q\n", port, p.ID, len(resp), resp)
 		if resp == "" {
 			continue
 		}

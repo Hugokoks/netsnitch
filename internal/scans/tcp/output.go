@@ -14,8 +14,7 @@ func (f TCPFormatter) Protocol() domain.Protocol {
 }
 
 func (f TCPFormatter) FormatRows(res domain.Result) string {
-
-	var output string
+	var out string
 
 	status := "CLOSED"
 	if res.Open {
@@ -23,33 +22,43 @@ func (f TCPFormatter) FormatRows(res domain.Result) string {
 	}
 	if res.Filtred {
 		status = "FILTRED"
-
 	}
 
-	output = fmt.Sprintf(
+	service := res.Service
+	if service == "" {
+		service = "unknown"
+	}
+
+	out = fmt.Sprintf(
 		"[%s] %s:%d (%s) [%s]\n",
 		status,
 		res.IP,
 		res.Port,
 		res.Protocol,
-		res.Service,
+		service,
 	)
 
-	if res.Banner != "" {
-		output += fmt.Sprintf(" └ banner: %s\n", res.Banner)
+	if res.Product != "" {
+		out += fmt.Sprintf(" └ product: %s\n", res.Product)
 	}
 
-	return output
+	if res.Version != "" {
+		out += fmt.Sprintf(" └ version: %s\n", res.Version)
+	}
+
+	if res.Banner != "" {
+		label, value := output.FormatTextOrHex(res.Banner, 400, 64)
+		out += fmt.Sprintf(" └ %s: %s\n", label, value)
+	}
+
+	return out
 }
 
 func (f TCPFormatter) FormatJson(res domain.Result) string {
-
 	output, _ := json.Marshal(res)
 	return string(output) + "\n"
-
 }
 
-// Automatically register formatter on package load
 func init() {
 	output.Register(TCPFormatter{})
 }
